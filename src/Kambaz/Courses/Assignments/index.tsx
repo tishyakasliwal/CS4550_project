@@ -13,8 +13,7 @@ export default function Assignments() {
     <div className="wd-title p-3 ps-2 bg-secondary"> <BsGripVertical className="me-2 fs-3" /> Assignments <AssignmentsBannerButtons/>  </div>
 
     
-        <h3 id="wd-assignments-title">
-          ASSIGNMENTS 40% of Total <button>+</button> </h3>
+        
         <ul id="wd-assignment-list">
           <li className="wd-assignment-list-item">
             <a href="#/Kambaz/Courses/1234/Assignments/123"
