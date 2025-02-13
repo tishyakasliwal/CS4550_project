@@ -13,7 +13,7 @@ export default function TOC() {
        <Nav.Link href="#/Labs/Lab2">Lab 2</Nav.Link>
      </Nav.Item>
      <Nav.Item>
-       <Nav.Link href="#/Labs/Lab2">Lab 3</Nav.Link>
+       <Nav.Link href="#/Labs/Lab3">Lab 3</Nav.Link>
      </Nav.Item>
      <Nav.Item>
        <Nav.Link href="#/Kambaz">Kambaz</Nav.Link>
