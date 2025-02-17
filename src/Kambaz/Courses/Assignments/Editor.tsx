@@ -79,8 +79,8 @@ export default function AssignmentEditor() {
         </Row>
 
         <div className="d-flex justify-content-end">
-          <Button as={Link} to={`/Kambaz/Courses/${cid}/Assignments`} variant="secondary" className="me-2">Cancel</Button>
-          <Button as={Link} to={`/Kambaz/Courses/${cid}/Assignments`} variant="primary">Save</Button>
+          <Button onClick={() => {`/Kambaz/Courses/${cid}/Assignments`}} variant="secondary" className="me-2">Cancel</Button>
+          <Button onClick={() => {`/Kambaz/Courses/${cid}/Assignments`}} variant="primary">Save</Button>
         </div>
       </Form>
     </div>
