@@ -1,5 +1,5 @@
 import { Form, Button, Row, Col } from "react-bootstrap";
-import { useParams, Link } from "react-router-dom";
+import { useParams} from "react-router-dom";
 import { assignments } from "../../Database";
 
 export default function AssignmentEditor() {
