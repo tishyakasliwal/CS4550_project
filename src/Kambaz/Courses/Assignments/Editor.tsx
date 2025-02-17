@@ -1,6 +1,7 @@
 import { Form, Button, Row, Col } from "react-bootstrap";
 import { useParams} from "react-router-dom";
 import { assignments } from "../../Database";
+import { Link } from "react-router-dom";
 
 export default function AssignmentEditor() {
   const { cid, aid } = useParams<{ cid: string; aid: string }>();
@@ -79,8 +80,8 @@ export default function AssignmentEditor() {
         </Row>
 
         <div className="d-flex justify-content-end">
-          <Button onClick={() => {`/Kambaz/Courses/${cid}/Assignments`}} variant="secondary" className="me-2">Cancel</Button>
-          <Button onClick={() => {`/Kambaz/Courses/${cid}/Assignments`}} variant="primary">Save</Button>
+          <Link to={`/Kambaz/Courses/${cid}/Assignments`}> <Button variant="secondary" className="me-2">Cancel</Button> </Link>
+          <Link to={`/Kambaz/Courses/${cid}/Assignments`}> <Button variant="primary">Save</Button> </Link>
         </div>
       </Form>
     </div>
