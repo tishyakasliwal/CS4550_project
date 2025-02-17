@@ -1,0 +1,112 @@
+
+
+  [
+    {
+      "_id": "A101",
+      "title": "Propulsion Assignment",
+      "course": "RS101",
+      "description": "Analyze the propulsion system of a rocket.",
+      "points": 100,
+      "dueDate": "2023-12-01",
+      "availableDate": "2023-11-01",
+      "group": "Assignments",
+      "displayGrade": "points",
+      "submissionType": "online"
+    },
+    {
+      "_id": "A102",
+      "title": "Combustion Analysis",
+      "course": "RS101",
+      "description": "Perform a detailed combustion analysis.",
+      "points": 100,
+      "dueDate": "2023-12-15",
+      "availableDate": "2023-11-15",
+      "group": "Assignments",
+      "displayGrade": "points",
+      "submissionType": "online"
+    },
+    {
+      "_id": "A103",
+      "title": "Nozzle Design Project",
+      "course": "RS101",
+      "description": "Design a nozzle for a rocket engine.",
+      "points": 100,
+      "dueDate": "2023-12-30",
+      "availableDate": "2023-12-01",
+      "group": "Assignments",
+      "displayGrade": "points",
+      "submissionType": "online"
+    },
+    {
+      "_id": "A201",
+      "title": "Aerodynamics Quiz",
+      "course": "RS102",
+      "description": "Quiz on basic aerodynamics principles.",
+      "points": 50,
+      "dueDate": "2023-11-10",
+      "availableDate": "2023-11-01",
+      "group": "Quizzes",
+      "displayGrade": "percentage",
+      "submissionType": "online"
+    },
+    {
+      "_id": "A202",
+      "title": "Flow Analysis",
+      "course": "RS102",
+      "description": "Analyze the flow over an airfoil.",
+      "points": 100,
+      "dueDate": "2023-11-20",
+      "availableDate": "2023-11-10",
+      "group": "Assignments",
+      "displayGrade": "points",
+      "submissionType": "online"
+    },
+    {
+      "_id": "A203",
+      "title": "Heating Analysis",
+      "course": "RS102",
+      "description": "Analyze the heating effects on a spacecraft.",
+      "points": 100,
+      "dueDate": "2023-12-05",
+      "availableDate": "2023-11-25",
+      "group": "Assignments",
+      "displayGrade": "points",
+      "submissionType": "online"
+    },
+    {
+      "_id": "A301",
+      "title": "Structural Design Task",
+      "course": "RS103",
+      "description": "Design the structure of a satellite.",
+      "points": 100,
+      "dueDate": "2023-12-10",
+      "availableDate": "2023-11-20",
+      "group": "Assignments",
+      "displayGrade": "points",
+      "submissionType": "online"
+    },
+    {
+      "_id": "A302",
+      "title": "Orbital Calculations",
+      "course": "RS103",
+      "description": "Calculate the orbit of a satellite.",
+      "points": 100,
+      "dueDate": "2023-12-20",
+      "availableDate": "2023-12-01",
+      "group": "Assignments",
+      "displayGrade": "points",
+      "submissionType": "online"
+    },
+    {
+      "_id": "A303",
+      "title": "Systems Engineering Exam",
+      "course": "RS103",
+      "description": "Exam on systems engineering principles.",
+      "points": 100,
+      "dueDate": "2023-12-30",
+      "availableDate": "2023-12-15",
+      "group": "Exams",
+      "displayGrade": "points",
+      "submissionType": "online"
+    }
+  ]
