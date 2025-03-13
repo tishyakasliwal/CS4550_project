@@ -3,6 +3,7 @@ import GreenCheckmark from "./GreenCheckmark";
 import { Button, Dropdown } from "react-bootstrap";
 import ModuleEditor from "./ModuleEditor";
 import { useState } from "react";
+import { useSelector } from "react-redux";
 
 export default function ModulesControls({
   moduleName,
@@ -13,11 +14,14 @@ export default function ModulesControls({
   setModuleName: (title: string) => void;
   addModule: () => void;
 }) {
+ const { currentUser } = useSelector((state: any) => state.accountReducer);
  const [show, setShow] = useState(false);
  const handleClose = () => setShow(false);
  const handleShow = () => setShow(true);
  return (
    <div id="wd-modules-controls" className="text-nowrap">
+    {currentUser?.role === "FACULTY" && (
+        <>
      <Button variant="danger" onClick={handleShow} size="lg" className="me-1 float-end" id="wd-add-module-btn">
        <FaPlus className="position-relative me-2" style={{ bottom: "1px" }} />
        Module
@@ -46,6 +50,8 @@ export default function ModulesControls({
         </Dropdown.Item>
        </Dropdown.Menu>
      </Dropdown>
+     </>
+      )}
      {/* Implement the View Progress and Collapse All buttons with IDs wd-view-progress and wd-collapse-all */}
         <Button variant="secondary" size="lg" className="me-1 float-end" id="wd-view-progress">
         View Progress

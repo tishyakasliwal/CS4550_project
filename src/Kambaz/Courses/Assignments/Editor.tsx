@@ -2,10 +2,12 @@ import { Form, Button, Row, Col } from "react-bootstrap";
 import { useParams} from "react-router-dom";
 import { assignments } from "../../Database";
 import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 export default function AssignmentEditor() {
   const { cid, aid } = useParams<{ cid: string; aid: string }>();
   const assignment = assignments.find((assignment) => assignment._id === aid);
+  const { currentUser } = useSelector((state: any) => state.accountReducer);
 
   if (!assignment) {
     return <div>Assignment not found</div>;
@@ -13,6 +15,7 @@ export default function AssignmentEditor() {
 
   return (
     <div id="wd-assignments-editor" className="p-3">
+      {currentUser?.role === "FACULTY" && (
       <Form>
         <Form.Group className="mb-3" controlId="wd-name">
           <Form.Label>Assignment Name</Form.Label>
@@ -84,6 +87,7 @@ export default function AssignmentEditor() {
           <Link to={`/Kambaz/Courses/${cid}/Assignments`}> <Button variant="primary">Save</Button> </Link>
         </div>
       </Form>
+      )}
     </div>
   );
 }
