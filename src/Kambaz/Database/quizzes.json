@@ -1,0 +1,12 @@
+[
+    {
+        "_id": "A101",
+        "title": "Propulsion Quiz",
+        "course": "RS101",
+        "availability": "Closed",
+        "dueDate": "2023-12-01",
+        "points": 100,
+        "quesNum": "5",
+        "score": "90"
+      }
+]
