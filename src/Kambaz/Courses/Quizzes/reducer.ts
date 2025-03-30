@@ -18,7 +18,8 @@ const quizzesSlice = createSlice({
         dueDate: quiz.dueDate,
         points: quiz.points,
         quesNum: quiz.quesNum,
-        score: quiz.score
+        score: quiz.score,
+        published: false
         // ...
       };
       state.quizzes = [...state.quizzes, newQuiz] as any;
@@ -38,9 +39,16 @@ const quizzesSlice = createSlice({
         q._id === quizId ? { ...q, editing: true } : q
       ) as any;
     },
+    
+    publishQuiz: (state, { payload: quizId }) => {
+      state.quizzes = state.quizzes.map((q: any) =>
+        q._id === quizId ? { ...q, published: !q.published } : q
+      ) as any;
+    },
+
   },
 });
 
-export const { addQuiz, deleteQuiz, updateQuiz, editQuiz } =
+export const { addQuiz, deleteQuiz, updateQuiz, editQuiz, publishQuiz } =
   quizzesSlice.actions;
 export default quizzesSlice.reducer;

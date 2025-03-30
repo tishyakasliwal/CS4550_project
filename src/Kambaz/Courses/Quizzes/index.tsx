@@ -8,7 +8,9 @@ import "../../styles.css";
 import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
 import QuizzesControls from "./QuizzesControls";
-import { deleteQuiz } from "./reducer";
+import { deleteQuiz, updateQuiz } from "./reducer";
+import { useNavigate } from "react-router-dom";
+
 
 export default function Quizzes() {
   const { cid } = useParams<{ cid: string }>();
@@ -17,7 +19,8 @@ export default function Quizzes() {
   const dispatch = useDispatch();
   const [showModal, setShowModal] = useState(false);
   const [selectedQuiz, setSelectedQuiz] = useState<any>(null);
-  const { currentUser } = useSelector((state: any) => state.accountReducer);
+//   const { currentUser } = useSelector((state: any) => state.accountReducer);
+  const navigate = useNavigate();
 
   const handleDelete = (quiz: any) => {
     setSelectedQuiz(quiz);
@@ -28,14 +31,23 @@ export default function Quizzes() {
     dispatch(deleteQuiz(selectedQuiz._id));
     setShowModal(false);
   };
+
+  const handleEdit = (quiz: any) => {
+    navigate(`/Kambaz/Courses/${cid}/Quizzes/${quiz._id}/edit`);
+  };
+
+  const handlePublish = (quiz: any) => {
+    dispatch(updateQuiz({ ...quiz, published: !quiz.published }));
+  };
   
 
   return (
     <div id="wd-quizzes">
       <QuizzesControls /><br /><br /><br /><br />
 
-      <ListGroup className="rounded-0" id="wd-modules">
-        <ListGroup.Item className="wd-module p-0 mb-5 fs-5 border-gray">
+      <ListGroup className="rounded-0" id="wd-quizzes">
+        <ListGroup.Item className="wd-quizzes p-0 mb-5 fs-5 border-gray">
+
           <div className="wd-title p-3 ps-2 bg-secondary">
             <BsGripVertical className="me-2 fs-3" /> Assignment Quizzes 
           </div>
@@ -43,16 +55,21 @@ export default function Quizzes() {
           <ListGroup id="wd-quiz-list" className="wd-lessons rounded-0">
             {courseQuizzes.map((quiz: any) => (
               <ListGroup.Item key={quiz._id} className="wd-quiz-list-item">
-                <a href={`#/Kambaz/Courses/${cid}/Quizzes/${quiz._id}`} className="wd-quiz-link">
+                <a href={`#/Kambaz/Courses/${cid}/Quizzes/${quiz._id}`} className="wd-quiz-link"> </a>
                 <GoRocket className="me-2 fs-3" />
-                  {quiz.title} <QuizzesControlButtons />
-                </a>
+                  {quiz.title} <QuizzesControlButtons 
+                            quiz={quiz}
+                            onEdit={() => handleEdit(quiz)}
+                            onDelete={() => handleDelete(quiz)}
+                            onPublish={() => handlePublish(quiz)}
+                            />
+               
                 <p> <b> {quiz.availability} </b> | <b> Due </b> {quiz.dueDate} | {quiz.points} pts | {quiz.quesNum} Questions</p>
-                {currentUser?.role === "FACULTY" && (
+                {/* {currentUser?.role === "FACULTY" && (
                   <Button variant="danger" size="sm" className="float-end" onClick={() => handleDelete(quiz)}>
                     <LuTrash />
                   </Button>
-                )}
+                )} */}
               </ListGroup.Item>
             ))}
           </ListGroup>
