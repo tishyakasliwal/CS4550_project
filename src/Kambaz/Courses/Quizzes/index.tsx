@@ -1,7 +1,7 @@
 import { Button, ListGroup, Modal } from "react-bootstrap";
 import { BsGripVertical } from "react-icons/bs";
 import QuizzesControlButtons from "./QuizzesControlButtons";
-import { LuTrash } from "react-icons/lu";
+
 import { GoRocket } from "react-icons/go";
 import { useParams } from "react-router-dom";
 import "../../styles.css";
