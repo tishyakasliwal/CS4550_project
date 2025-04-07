@@ -24,7 +24,6 @@ export default function QuizDetailsStudent() {
   }
 
   // Handler: Navigate to the quiz-taking screen
-  // You’ll need a route for actually taking the quiz, e.g. /:cid/Quizzes/:quizId/attempt
   const handleStartQuiz = () => {
     navigate(`/Kambaz/Courses/${cid}/Quizzes/${quizId}/attempt`);
   };
