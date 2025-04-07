@@ -33,7 +33,7 @@ export default function Quizzes() {
   };
 
   const handleEdit = (quiz: any) => {
-    navigate(`/Kambaz/Courses/${cid}/Quizzes/${quiz._id}/edit`);
+    navigate(`/Kambaz/Courses/${cid}/Quizzes/${quiz._id}`);
   };
 
   const handlePublish = (quiz: any) => {
