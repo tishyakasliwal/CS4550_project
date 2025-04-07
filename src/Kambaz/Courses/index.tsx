@@ -6,11 +6,10 @@ import AssignmentEditor from "./Assignments/Editor";
 import { Navigate, Route, Routes, useParams, useLocation } from "react-router";
 import { FaAlignJustify } from "react-icons/fa";
 import Quizzes from "./Quizzes";
-<<<<<<< HEAD
+
 import QuizDetails from "./Quizzes/QuizDetails";
-=======
 import QuizDetailsStudent from "./Quizzes/QuizDetailsStudent";
->>>>>>> 3fab2671eaaf441748e124311628011f05835dba
+
 
 interface CoursesProps {
   courses: any[];
@@ -40,11 +39,11 @@ export default function Courses({ courses }: CoursesProps) {
             <Route path="Assignments" element={<Assignments />} />
             <Route path="Assignments/:aid" element={<AssignmentEditor />} />
             <Route path="Quizzes" element={<Quizzes />} />
-<<<<<<< HEAD
+
             <Route path="Quizzes/:quizId" element={<QuizDetails />} />
-=======
-            <Route path="Quizzes/:quizId" element={<QuizDetailsStudent />} />
->>>>>>> 3fab2671eaaf441748e124311628011f05835dba
+            <Route path="Quizzes/:quizId/start" element={<QuizDetailsStudent />} />
+
+            
           </Routes>
         </div>
       </div>
