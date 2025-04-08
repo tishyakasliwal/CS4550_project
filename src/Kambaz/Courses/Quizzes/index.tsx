@@ -3,7 +3,7 @@ import { BsGripVertical } from "react-icons/bs";
 import QuizzesControlButtons from "./QuizzesControlButtons";
 
 import { GoRocket } from "react-icons/go";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import "../../styles.css";
 import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
@@ -19,7 +19,6 @@ export default function Quizzes() {
   const dispatch = useDispatch();
   const [showModal, setShowModal] = useState(false);
   const [selectedQuiz, setSelectedQuiz] = useState<any>(null);
-//   const { currentUser } = useSelector((state: any) => state.accountReducer);
   const navigate = useNavigate();
 
   const handleDelete = (quiz: any) => {
@@ -39,7 +38,7 @@ export default function Quizzes() {
   const handlePublish = (quiz: any) => {
     dispatch(updateQuiz({ ...quiz, published: !quiz.published }));
   };
-  
+  const { currentUser } = useSelector((state: any) => state.accountReducer);
 
   return (
     <div id="wd-quizzes">
@@ -57,12 +56,24 @@ export default function Quizzes() {
               <ListGroup.Item key={quiz._id} className="wd-quiz-list-item">
                 <a href={`#/Kambaz/Courses/${cid}/Quizzes/${quiz._id}`} className="wd-quiz-link"> </a>
                 <GoRocket className="me-2 fs-3" />
-                  {quiz.title} <QuizzesControlButtons 
-                            quiz={quiz}
-                            onEdit={() => handleEdit(quiz)}
-                            onDelete={() => handleDelete(quiz)}
-                            onPublish={() => handlePublish(quiz)}
-                            />
+                {currentUser?.role === "STUDENT" ? (
+  <Link
+    to={`/Kambaz/Courses/${cid}/Quizzes/${quiz._id}/start`}
+    className="wd-quiz-link text-decoration-none"
+  >
+    {quiz.title}
+  </Link>
+) : (
+  <span className="wd-quiz-link">{quiz.title}</span>
+)} {currentUser?.role === "FACULTY" && (
+  // Show control buttons only for faculty
+  <QuizzesControlButtons
+    quiz={quiz}
+    onEdit={() => handleEdit(quiz)}
+    onDelete={() => handleDelete(quiz)}
+    onPublish={() => handlePublish(quiz)}
+  />
+)}
                
                 <p> <b> {quiz.availability} </b> | <b> Due </b> {quiz.dueDate} | {quiz.points} pts | {quiz.quesNum} Questions</p>
                 {/* {currentUser?.role === "FACULTY" && (
