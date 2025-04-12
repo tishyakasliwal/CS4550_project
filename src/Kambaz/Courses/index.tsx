@@ -9,7 +9,7 @@ import Quizzes from "./Quizzes";
 
 import QuizDetails from "./Quizzes/QuizDetails";
 import QuizDetailsStudent from "./Quizzes/QuizDetailsStudent";
-import QuizPreview from "./Quizzes/QuizPreview";
+//import QuizPreview from "./Quizzes/QuizPreview";
 
 
 interface CoursesProps {
