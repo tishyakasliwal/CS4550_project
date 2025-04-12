@@ -10,7 +10,7 @@ import Quizzes from "./Quizzes";
 import QuizDetails from "./Quizzes/QuizDetails";
 import QuizDetailsStudent from "./Quizzes/QuizDetailsStudent";
 <<<<<<< HEAD
-import QuizPreview from "./Quizzes/QuizPreview";
+
 import QuizEditor from "./Quizzes/QuizEditor";
 =======
 //import QuizPreview from "./Quizzes/QuizPreview";
