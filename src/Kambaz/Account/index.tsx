@@ -16,15 +16,28 @@ export default function Account() {
           </td>
           <td valign="top">
             <Routes>
-              <Route path="/"        element={<Navigate to={ currentUser ? "/Kambaz/Account/Profile" : "/Kambaz/Account/Signin" } />} />
-              <Route path="/Signin"  element={<Signin />} />
+              <Route
+                path="/"
+                element={
+                  <Navigate
+                    to={
+                      currentUser
+                        ? "/Kambaz/Account/Profile"
+                        : "/Kambaz/Account/Signin"
+                    }
+                  />
+                }
+              />
+              <Route path="/Signin" element={<Signin />} />
               <Route path="/Profile" element={<Profile />} />
-              <Route path="/Signup"  element={<Signup />} />
+              <Route path="/Signup" element={<Signup />} />
               <Route path="/Users" element={<Users />} />
+              ``
               <Route path="/Users/:uid" element={<Users />} />
             </Routes>
           </td>
         </tr>
-      </table>      
+      </table>
     </div>
-);}
+  );
+}
