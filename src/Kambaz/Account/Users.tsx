@@ -8,7 +8,7 @@ export default function Users() {
  const [users, setUsers] = useState<any[]>([]);
  const { uid } = useParams();
  const [role, setRole] = useState("");
- const [name, setName] = useState("");
+ const [, setName] = useState("");
  const createUser = async () => {
     const user = await client.createUser({
       firstName: "New",

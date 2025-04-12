@@ -9,8 +9,12 @@ import Quizzes from "./Quizzes";
 
 import QuizDetails from "./Quizzes/QuizDetails";
 import QuizDetailsStudent from "./Quizzes/QuizDetailsStudent";
+<<<<<<< HEAD
 import QuizPreview from "./Quizzes/QuizPreview";
 import QuizEditor from "./Quizzes/QuizEditor";
+=======
+//import QuizPreview from "./Quizzes/QuizPreview";
+>>>>>>> de1ad8030431f6a137828b617fd42109b471feab
 
 
 interface CoursesProps {
