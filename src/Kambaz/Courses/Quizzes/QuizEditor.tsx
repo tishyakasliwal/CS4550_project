@@ -29,18 +29,18 @@ export default function QuizEditor() {
     >
       <div className="d-flex justify-content-between align-items-center mb-4">
         <div>
-          <h3 className="m-0">Unnamed Quiz</h3>
+          <h3 className="m-0">{quiz.title}</h3>
         </div>
         <div className="d-flex align-items-center">
-          <span className="me-2">Points</span>
+          <span className="me-2">{quiz.points}</span>
           <input
             type="text"
             className="form-control"
-            defaultValue="0"
+            defaultValue={quiz.points}
             style={{ width: "60px" }}
           />
           <div className="ms-3 d-flex align-items-center">
-            <span className="text-secondary me-2">Not Published</span>
+            <span className="text-secondary me-2">{quiz.availability}</span>
             <button
               className="btn btn-outline-secondary"
               style={{ border: "none" }}
@@ -79,13 +79,13 @@ export default function QuizEditor() {
       </ul>
 
       {activeTab === "details" ? (
-        // Details Tab Content
+        // Details Tab
         <Form>
           <Form.Group className="mb-4">
             <Form.Control
               type="text"
               id="wd-quiz-name"
-              defaultValue="Unnamed Quiz"
+              defaultValue={quiz.title}
               className="w-100"
             />
           </Form.Group>
@@ -181,7 +181,11 @@ export default function QuizEditor() {
                 <Form.Label htmlFor="wd-quiz-type" className="fw-bold">
                   Quiz Type
                 </Form.Label>
-                <Form.Select id="wd-quiz-type" className="w-100">
+                <Form.Select
+                  id="wd-quiz-type"
+                  className="w-100"
+                  defaultValue={quiz.quizType}
+                >
                   <option value="Graded Quiz">Graded Quiz</option>
                   <option value="Practice Quiz">Practice Quiz</option>
                   <option value="Survey">Survey</option>
@@ -196,8 +200,14 @@ export default function QuizEditor() {
                 <Form.Label htmlFor="wd-assignment-group" className="fw-bold">
                   Assignment Group
                 </Form.Label>
-                <Form.Select id="wd-assignment-group" className="w-100">
+                <Form.Select
+                  id="wd-assignment-group"
+                  className="w-100"
+                  defaultValue={quiz.assignmentGroup}
+                >
                   <option value="ASSIGNMENTS">ASSIGNMENTS</option>
+                  <option value="Quizzes">Quizzes</option>
+                  <option value="Exams">Exams</option>
                 </Form.Select>
               </Form.Group>
             </div>
@@ -211,6 +221,7 @@ export default function QuizEditor() {
                 id="wd-shuffle-answers"
                 label="Shuffle Answers"
                 className="mb-3"
+                defaultChecked={quiz.shuffleAnswers === "Yes"}
               />
 
               <div className="d-flex align-items-center mb-3">
@@ -219,11 +230,13 @@ export default function QuizEditor() {
                   id="wd-time-limit"
                   label="Time Limit"
                   className="me-2"
+                  defaultChecked={quiz.timeLimit > 0}
                 />
                 <Form.Control
                   type="text"
                   style={{ width: "60px" }}
                   className="me-2"
+                  defaultValue={quiz.timeLimit || ""}
                 />
                 <span>Minutes</span>
               </div>
@@ -233,6 +246,7 @@ export default function QuizEditor() {
                 id="wd-multiple-attempts"
                 label="Allow Multiple Attempts"
                 className="mb-2"
+                defaultChecked={quiz.multipleAttempts === "Yes"}
               />
             </Card.Body>
           </Card>
@@ -245,7 +259,7 @@ export default function QuizEditor() {
                 </Form.Label>
                 <div className="position-relative">
                   <div className="border rounded p-2 d-flex align-items-center">
-                    <span>Everyone</span>
+                    <span>{quiz.for}</span>
                     <button className="btn btn-sm ms-auto">×</button>
                   </div>
                 </div>
@@ -260,6 +274,7 @@ export default function QuizEditor() {
                     type="text"
                     id="wd-due-date"
                     className="w-100"
+                    defaultValue={quiz.dueDate}
                   />
                   <button className="btn btn-outline-secondary">
                     <i className="fas fa-calendar"></i>
@@ -278,6 +293,7 @@ export default function QuizEditor() {
                         type="text"
                         id="wd-available-from"
                         className="w-100"
+                        defaultValue={quiz.availableDate}
                       />
                       <button className="btn btn-outline-secondary">
                         <i className="fas fa-calendar"></i>
@@ -298,6 +314,7 @@ export default function QuizEditor() {
                         type="text"
                         id="wd-available-until"
                         className="w-100"
+                        defaultValue={quiz.untilDate}
                       />
                       <button className="btn btn-outline-secondary">
                         <i className="fas fa-calendar"></i>
@@ -310,7 +327,7 @@ export default function QuizEditor() {
           </Card>
         </Form>
       ) : (
-        // Questions Tab Content
+        // Questions Tab
         <div>
           <div className="d-flex justify-content-center my-5">
             <Button
@@ -320,7 +337,9 @@ export default function QuizEditor() {
             >
               <i className="fas fa-plus me-2"></i> New Question
             </Button>
-
+          </div>
+          <div className="text-center text-muted">
+            Currently {quiz.quesNum} questions • {quiz.points} points total
           </div>
         </div>
       )}
@@ -331,7 +350,7 @@ export default function QuizEditor() {
             <i className="fas fa-plus"></i> Add
           </button>
         ) : (
-          <div></div> // Empty div for spacing in Questions tab
+          <div></div> // Empty div for spacing purposes
         )}
         <div className="d-flex gap-2">
           <Link to={`/Courses/${cid}/Quizzes`} className="btn btn-secondary">
