@@ -1,12 +1,12 @@
 import { useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { Form, Card, Button } from "react-bootstrap";
 import { quizzes } from "../../Database";
 
 export default function QuizEditor() {
   const { cid, quizId } = useParams();
   const [activeTab, setActiveTab] = useState("details");
-
+  const navigate = useNavigate();
   const quiz = quizzes.find((q) => q._id === quizId && q.course === cid);
 
   if (!quiz) {
@@ -15,6 +15,10 @@ export default function QuizEditor() {
 
   const handleTabClick = (tab: any) => {
     setActiveTab(tab);
+  };
+
+  const handleQuestionClick = () => {
+    navigate(`/Kambaz/Courses/${cid}/Quizzes/${quizId}/edit/questions`);
   };
 
   return (
@@ -312,12 +316,11 @@ export default function QuizEditor() {
             <Button
               variant="outline-secondary"
               className="btn-lg"
-              onClick={() => {
-                /* Add question logic here */
-              }}
+              onClick={handleQuestionClick}
             >
               <i className="fas fa-plus me-2"></i> New Question
             </Button>
+
           </div>
         </div>
       )}
