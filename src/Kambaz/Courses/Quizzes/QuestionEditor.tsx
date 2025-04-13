@@ -28,6 +28,8 @@ export default function QuestionEditor() {
             { id: uuidv4(), text: "", isCorrect: true }
         ];
     });
+    const [questionType, setQuestionType] = useState("multiple-choice"); // Track selected question type
+
 
     // todo: change to save answers beter
     useEffect(() => {
@@ -76,11 +78,12 @@ export default function QuestionEditor() {
                     />
                     <Form.Select
                         id="group"
-                    //onChange={handleChange}
+                        value={questionType}
+                        onChange={(e) => setQuestionType(e.target.value)} // Update question type
                     >
                         <option value="multiple-choice">Multiple Choice</option>
                         <option value="true-false">True False</option>
-                        <option value="Exams">Fill in</option>
+                        <option value="Fill-in">Fill in</option>
                     </Form.Select>
                     <Form.Label column sm={2} htmlFor="points">
                         Points
@@ -94,7 +97,8 @@ export default function QuestionEditor() {
                         />
                     </Col>
                 </Form.Group>
-
+                {questionType === "multiple-choice" && (
+          <div>
                 <Form.Group className="mb-4">
                     <div>Enter your question and multiple answers, then select the one correct answer.</div>
                     <Form.Label className="fw-bold">Question:</Form.Label>
@@ -228,19 +232,156 @@ export default function QuestionEditor() {
                     <i className="fas fa-plus me-1"></i> Add Another Answer
                 </Button>
 
-                <div className="d-flex border-top pt-3 mt-4 justify-content-between">
+            
+                </div>
+                )}
 
-                    <div className="d-flex gap-2">
-                        <Link to={`/Courses/${cid}/Quizzes`} className="btn btn-secondary">
-                            Cancel
-                        </Link>
-                        <Link to={`/Courses/${cid}/Quizzes`} className="btn btn-danger">
-                            Save
-                        </Link>
+
+
+
+{questionType === "true-false" && (
+          <div>
+                <Form.Group className="mb-4">
+                    <div>Enter your question text, then select if True or False is the correct answer.</div>
+                    <Form.Label className="fw-bold">Question:</Form.Label>
+                    <div className="border mb-2">
+                        <div className="bg-light border-bottom px-2 py-1 d-flex">
+                            <div className="d-flex me-auto">
+                                <div className="dropdown me-2">
+                                    <button
+                                        className="btn btn-sm dropdown-toggle"
+                                        type="button"
+                                    >
+                                        12pt
+                                    </button>
+                                </div>
+                                <div className="dropdown me-2">
+                                    <button
+                                        className="btn btn-sm dropdown-toggle"
+                                        type="button"
+                                    >
+                                        Paragraph
+                                    </button>
+                                </div>
+                                <div className="btn-group me-2">
+                                    <button className="btn btn-sm">
+                                        <strong>B</strong>
+                                    </button>
+                                    <button className="btn btn-sm">
+                                        <i>I</i>
+                                    </button>
+                                    <button className="btn btn-sm">
+                                        <u>U</u>
+                                    </button>
+                                </div>
+                                <div className="dropdown me-2">
+                                    <button
+                                        className="btn btn-sm dropdown-toggle"
+                                        type="button"
+                                    >
+                                        <i className="fas fa-subscript"></i>
+                                    </button>
+                                </div>
+                                <div className="dropdown me-2">
+                                    <button
+                                        className="btn btn-sm dropdown-toggle"
+                                        type="button"
+                                    >
+                                        <i className="fas fa-paint-brush"></i>
+                                    </button>
+                                </div>
+                                <div className="dropdown me-2">
+                                    <button
+                                        className="btn btn-sm dropdown-toggle"
+                                        type="button"
+                                    >
+                                        <i className="fas fa-superscript"></i>
+                                    </button>
+                                </div>
+                                <button className="btn btn-sm">
+                                    <i className="fas fa-ellipsis-h"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <Form.Control
+                            as="textarea"
+                            id="wd-instructions"
+                            rows={5}
+                            className="w-100 border-0"
+                        />
+                    </div>
+                    <div className="d-flex justify-content-between align-items-center text-muted">
+                        <div>p</div>
+                        <div className="d-flex align-items-center">
+                            <span className="text-danger me-2">0 words</span>
+                            <button className="btn btn-sm" style={{ color: "#999" }}>
+                                &lt;/&gt;
+                            </button>
+                            <button className="btn btn-sm" style={{ color: "#999" }}>
+                                <i className="fas fa-expand"></i>
+                            </button>
+                            <button className="btn btn-sm" style={{ color: "#999" }}>
+                                <i className="fas fa-ellipsis-v"></i>
+                            </button>
+                        </div>
+                    </div>
+                </Form.Group>
+
+
+
+                <div className="row mb-4">
+                    <div className="col-md-6">
+                        
+
+                            <Form.Group className="mb-4">
+                            <Form.Label className="fw-bold">Answers:</Form.Label>
+                            <div>
+                                <Form.Check
+                                type="radio"
+                                name="trueFalse"
+                                label="True"
+                                checked={answers.some((answer) => answer.text === "True" && answer.isCorrect)}
+                                onChange={() =>
+                                    setAnswers([
+                                    { id: uuidv4(), text: "True", isCorrect: true },
+                                    { id: uuidv4(), text: "False", isCorrect: false },
+                                    ])
+                                }
+                                />
+                                <Form.Check
+                                type="radio"
+                                name="trueFalse"
+                                label="False"
+                                checked={answers.some((answer) => answer.text === "False" && answer.isCorrect)}
+                                onChange={() =>
+                                    setAnswers([
+                                    { id: uuidv4(), text: "True", isCorrect: false },
+                                    { id: uuidv4(), text: "False", isCorrect: true },
+                                    ])
+                                }
+                                />
+                            </div>
+                            </Form.Group>
+
                     </div>
                 </div>
-            </Form>
+                
+                </div>
+                )}
 
+                <div className="d-flex border-top pt-3 mt-4 justify-content-between">
+
+                <div className="d-flex gap-2">
+                    <Link to={`/Courses/${cid}/Quizzes`} className="btn btn-secondary">
+                        Cancel
+                    </Link>
+                    <Link to={`/Courses/${cid}/Quizzes`} className="btn btn-danger">
+                        Save
+                    </Link>
+                </div>
+                </div>
+            </Form>
+            
 
         </div>
     );
