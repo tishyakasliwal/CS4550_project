@@ -3,6 +3,7 @@ import { Form, Button, Col, Row } from "react-bootstrap";
 import { quizzes } from "../../Database";
 import { useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
+import { FaTrash } from "react-icons/fa";
 
 interface Answer {
     id: string;
@@ -55,6 +56,26 @@ export default function QuestionEditor() {
         setAnswers(answers.map(answer =>
             ({ ...answer, isCorrect: answer.id === id })
         ));
+    };
+
+     // delete answer
+     const handleDeleteAnswer = (id: string): void => {
+        // check if trying to delete the last answer
+        if (answers.length <= 1) {
+            alert("You must have at least one answer.");
+            return;
+        }
+        // check if deleting the correct answer
+        const isCorrectAnswer = answers.find(answer => answer.id === id)?.isCorrect;
+        
+        // filter out the answer with the given id
+        const updatedAnswers = answers.filter(answer => answer.id !== id);
+        
+        // if deleting the correct answer, set the first remaining answer as correct
+        if (isCorrectAnswer && updatedAnswers.length > 0) {
+            updatedAnswers[0].isCorrect = true;
+        }
+        setAnswers(updatedAnswers);
     };
 
     if (!quiz) {
@@ -199,7 +220,7 @@ export default function QuestionEditor() {
                                     <Form.Label column sm={2} htmlFor={`answer-${answer.id}`}>
                                         {answer.isCorrect ? "Correct Answer" : "Possible Answer"}
                                     </Form.Label>
-                                    <Col sm={8}>
+                                    <Col sm={6}>
                                         <Form.Control
                                             type="text"
                                             id={`answer-${answer.id}`}
@@ -214,6 +235,11 @@ export default function QuestionEditor() {
                                             label="Correct"
                                             checked={answer.isCorrect}
                                             onChange={() => handleSetCorrectAnswer(answer.id)}
+                                        />
+                                    </Col>
+                                    <Col sm={2}>
+                                        <FaTrash className="text-danger me-2 mb-1"
+                                        onClick={() => handleDeleteAnswer(answer.id)}
                                         />
                                     </Col>
                                 </Row>
