@@ -4,10 +4,10 @@ import { Form, Card, Button } from "react-bootstrap";
 import { quizzes } from "../../Database";
 
 export default function QuizEditor() {
-  const { cid, qid } = useParams();
+  const { cid, quizId } = useParams();
   const [activeTab, setActiveTab] = useState("details");
 
-  const quiz = quizzes.find((q) => q._id === qid && q.course === cid);
+  const quiz = quizzes.find((q) => q._id === quizId && q.course === cid);
 
   if (!quiz) {
     return <div>Quiz not found</div>;
