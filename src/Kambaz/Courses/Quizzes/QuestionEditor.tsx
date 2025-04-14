@@ -31,6 +31,14 @@ export default function QuestionEditor() {
     });
     const [questionType, setQuestionType] = useState("multiple-choice"); // Track selected question type
 
+    // New state for Fill-in the Blank answers (simple string array)
+    const [fillInAnswers, setFillInAnswers] = useState<string[]>([""]);
+
+    // i'm optionally adding a state for fill-in question text default value
+    const [fillInQuestionText, setFillInQuestionText] = useState(
+    "Enter your question with a blank here"
+  );
+
 
     // todo: change to save answers beter
     useEffect(() => {
@@ -104,7 +112,7 @@ export default function QuestionEditor() {
                     >
                         <option value="multiple-choice">Multiple Choice</option>
                         <option value="true-false">True False</option>
-                        <option value="Fill-in">Fill in</option>
+                        <option value="Fill-in">Fill in the Blank</option>
                     </Form.Select>
                     <Form.Label column sm={2} htmlFor="points">
                         Points
@@ -394,6 +402,129 @@ export default function QuestionEditor() {
                 
                 </div>
                 )}
+
+
+                {questionType === "Fill-in" && (
+                <div>
+                    <Form.Group className="mb-4">
+                    <div>
+                        Enter your question text with a blank, then define all possible correct answers for the blank.
+                        <br />
+                        Students will see the quesiton followed by a small text box to type their answer.
+                    </div>
+                    <Form.Label className="fw-bold">Question:</Form.Label>
+                    <div className="border mb-2">
+                        <div className="bg-light border-bottom px-2 py-1 d-flex">
+                        <div className="d-flex me-auto">
+                            <div className="dropdown me-2">
+                            <button className="btn btn-sm dropdown-toggle" type="button">
+                                12pt
+                            </button>
+                            </div>
+                            <div className="dropdown me-2">
+                            <button className="btn btn-sm dropdown-toggle" type="button">
+                                Paragraph
+                            </button>
+                            </div>
+                            <div className="btn-group me-2">
+                            <button className="btn btn-sm"><strong>B</strong></button>
+                            <button className="btn btn-sm"><i>I</i></button>
+                            <button className="btn btn-sm"><u>U</u></button>
+                            </div>
+                            <div className="dropdown me-2">
+                            <button className="btn btn-sm dropdown-toggle" type="button">
+                                <i className="fas fa-subscript"></i>
+                            </button>
+                            </div>
+                            <div className="dropdown me-2">
+                            <button className="btn btn-sm dropdown-toggle" type="button">
+                                <i className="fas fa-paint-brush"></i>
+                            </button>
+                            </div>
+                            <div className="dropdown me-2">
+                            <button className="btn btn-sm dropdown-toggle" type="button">
+                                <i className="fas fa-superscript"></i>
+                            </button>
+                            </div>
+                            <button className="btn btn-sm">
+                            <i className="fas fa-ellipsis-h"></i>
+                            </button>
+                        </div>
+                        </div>
+                        <Form.Control
+                        as="textarea"
+                        id="wd-instructions"
+                        rows={5}
+                        className="w-100 border-0"
+                        value={fillInQuestionText}
+                        onChange={(e) => setFillInQuestionText(e.target.value)}
+                        />
+                    </div>
+                    <div className="d-flex justify-content-between align-items-center text-muted">
+                        <div>p</div>
+                        <div className="d-flex align-items-center">
+                        <span className="text-danger me-2">0 words</span>
+                        <button className="btn btn-sm" style={{ color: "#999" }}>
+                            &lt;/&gt;
+                        </button>
+                        <button className="btn btn-sm" style={{ color: "#999" }}>
+                            <i className="fas fa-expand"></i>
+                        </button>
+                        <button className="btn btn-sm" style={{ color: "#999" }}>
+                            <i className="fas fa-ellipsis-v"></i>
+                        </button>
+                        </div>
+                    </div>
+                    </Form.Group>
+                    <div className="row mb-4">
+                    <div className="col-md-6">
+                        <Form.Group>
+                        <Form.Label className="fw-bold">Answers:</Form.Label>
+                        {fillInAnswers.map((answer, index) => (
+                            <Row className="mb-3" key={index}>
+                            <Form.Label column sm={2} htmlFor={`fillAnswer-${index}`}>
+                                {`Possible Answer: `}
+                            </Form.Label>
+                            <Col sm={6}>
+                                <Form.Control
+                                type="text"
+                                id={`fillAnswer-${index}`}
+                                value={answer}
+                                onChange={(e) => {
+                                    const newAnswers = [...fillInAnswers];
+                                    newAnswers[index] = e.target.value;
+                                    setFillInAnswers(newAnswers);
+                                }}
+                                />
+                            </Col>
+                            <Col sm={2}>
+                                <FaTrash
+                                className="text-danger me-2 mb-1"
+                                onClick={() => {
+                                    if (fillInAnswers.length <= 1) {
+                                    alert("You must have at least one answer.");
+                                    return;
+                                    }
+                                    setFillInAnswers(fillInAnswers.filter((_, i) => i !== index));
+                                }}
+                                />
+                            </Col>
+                            </Row>
+                        ))}
+                        </Form.Group>
+                    </div>
+                    </div>
+                    <Button
+                    variant="outline-secondary"
+                    size="sm"
+                    onClick={() => setFillInAnswers([...fillInAnswers, ""])}
+                    className="mt-2"
+                    >
+                    <i className="fas fa-plus me-1"></i> Add Another Answer
+                    </Button>
+                </div>
+                )}
+
 
                 <div className="d-flex border-top pt-3 mt-4 justify-content-between">
 
