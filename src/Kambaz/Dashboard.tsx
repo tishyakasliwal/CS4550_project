@@ -10,9 +10,13 @@ interface DashboardProps {
   addNewCourse: (course: any) => void;
   deleteCourse: (courseId: string) => void;
   updateCourse: (course: any) => void;
+  enrolling: boolean;
+  setEnrolling: (enrolling: boolean) => void;
+  updateEnrollment: (courseId: string, enrolled: boolean) => void 
+
 }
 
-export default function Dashboard({ courses, course, setCourse, addNewCourse, deleteCourse, updateCourse }: DashboardProps) {
+export default function Dashboard({ courses, course, setCourse, addNewCourse, deleteCourse, updateCourse, enrolling, setEnrolling, updateEnrollment }: DashboardProps) {
   const handleAddCourse = () => {
     addNewCourse(course);
     setCourse({
@@ -33,7 +37,11 @@ export default function Dashboard({ courses, course, setCourse, addNewCourse, de
 
   return (
     <div id="wd-dashboard">
-      <h1 id="wd-dashboard-title">Dashboard</h1> <hr />
+      <h1 id="wd-dashboard-title">Dashboard         
+        <button onClick={() => setEnrolling(!enrolling)} className="float-end btn btn-primary" >
+          {enrolling ? "My Courses" : "All Courses"}
+        </button>
+        </h1> <hr />
       <h5>New Course
         <button className="btn btn-primary float-end" id="wd-add-new-course-click" onClick={handleAddCourse}> Add </button>
         <button className="btn btn-warning float-end me-2" onClick={handleUpdateCourse} id="wd-update-course-click"> Update </button>
@@ -51,6 +59,14 @@ export default function Dashboard({ courses, course, setCourse, addNewCourse, de
                   <Card.Img src="/images/reactjs.jpg" variant="top" width="100%" height={160} />
                   <Card.Body className="card-body">
                     <Card.Title className="wd-dashboard-course-title text-nowrap overflow-hidden">
+                    {enrolling && (
+                    <button onClick={(event) => {
+                      event.preventDefault();
+                      updateEnrollment(course._id, !course.enrolled);
+                    }} className={`btn ${ course.enrolled ? "btn-danger" : "btn-success" } float-end`} >
+                      {course.enrolled ? "Unenroll" : "Enroll"}
+                    </button>
+                      )}
                       {course.name} </Card.Title>
                     <Card.Text className="wd-dashboard-course-description overflow-hidden" style={{ height: "100px" }}>
                       {course.description} </Card.Text>
