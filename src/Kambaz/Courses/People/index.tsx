@@ -1,14 +1,12 @@
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import * as coursesClient from "../client";
 import { FaUserCircle } from "react-icons/fa";
 import { Table } from "react-bootstrap";
-import { useSelector } from "react-redux";
 
 export default function People() {
   const { cid } = useParams();
   const [users, setUsers] = useState<any[]>([]);
-  const { currentUser } = useSelector((state: any) => state.accountReducer); 
   useEffect(() => {
     const fetchUsers = async () => {
       try {
