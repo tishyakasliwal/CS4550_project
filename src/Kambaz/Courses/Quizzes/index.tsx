@@ -64,7 +64,12 @@ export default function Quizzes() {
     {quiz.title}
   </Link>
 ) : (
-  <span className="wd-quiz-link">{quiz.title}</span>
+  <Link
+    to={`/Kambaz/Courses/${cid}/Quizzes/${quiz._id}`}
+    className="wd-quiz-link text-decoration-none"
+  >
+    {quiz.title}
+  </Link>
 )} {currentUser?.role === "FACULTY" && (
   // Show control buttons only for faculty
   <QuizzesControlButtons

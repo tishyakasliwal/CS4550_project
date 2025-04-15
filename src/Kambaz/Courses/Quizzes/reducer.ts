@@ -4,23 +4,40 @@ import { v4 as uuidv4 } from "uuid";
 
 const initialState = {
   quizzes: quizzes,
+  //quizzes: [], for empty list
 };
 
 const quizzesSlice = createSlice({
   name: "quizzes",
   initialState,
   reducers: {
+    setQuizzes: (state, { payload: quizzes }) => {
+      state.quizzes = quizzes;
+    },
+
     addQuiz: (state, { payload: quiz }) => {
       const newQuiz: any = {
         _id: uuidv4(),
         title: quiz.title,
+        course: quiz.course,
         availability: quiz.availability,
         dueDate: quiz.dueDate,
         points: quiz.points,
         quesNum: quiz.quesNum,
         score: quiz.score,
-        published: false
-        // ...
+        quizType: quiz.quizType,
+        assignmentGroup: quiz.assignmentGroup,
+        shuffleAnswers: quiz.shuffleAnswers,
+        timeLimit: quiz.timeLimit,
+        multipleAttempts: quiz.multipleAttempts,
+        viewResponses: quiz.viewResponses,
+        oneQuestionAtATime: quiz.oneQuestionAtATime,
+        webcamRequired: quiz.webcamRequired,
+        lockQuestionsAfterAnswering: quiz.lockQuestionsAfterAnswering,
+        availableDate: quiz.availableDate,
+        untilDate: quiz.untilDate,
+        for: quiz.for,
+        published: quiz.published,
       };
       state.quizzes = [...state.quizzes, newQuiz] as any;
     },
@@ -49,6 +66,6 @@ const quizzesSlice = createSlice({
   },
 });
 
-export const { addQuiz, deleteQuiz, updateQuiz, editQuiz, publishQuiz } =
+export const { setQuizzes, addQuiz, deleteQuiz, updateQuiz, editQuiz, publishQuiz } =
   quizzesSlice.actions;
 export default quizzesSlice.reducer;
