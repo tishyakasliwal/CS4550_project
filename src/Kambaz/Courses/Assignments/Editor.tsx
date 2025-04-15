@@ -2,10 +2,12 @@ import { Form, Button, Row, Col } from "react-bootstrap";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import * as assignmentsClient from "./client";
+import { useSelector } from "react-redux";
 
 export default function AssignmentEditor() {
   const { cid, aid } = useParams<{ cid: string; aid: string }>();
   const navigate = useNavigate();
+  const { currentUser } = useSelector((state: any) => state.accountReducer);
 
   const [assignment, setAssignment] = useState({
     _id: "",
@@ -64,6 +66,15 @@ export default function AssignmentEditor() {
       setError("Failed to save assignment.");
     }
   };
+
+    // Show an empty page if the user is not a faculty member
+    if (currentUser?.role !== "FACULTY") {
+      return (
+        <div className="text-center mt-5">
+          
+        </div>
+      );
+    }
 
   if (loading) {
     return <div>Loading...</div>;

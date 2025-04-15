@@ -63,7 +63,7 @@ export default function Assignments() {
 
   return (
     <div id="wd-assignments">
-      <AssignmentControls />
+      {currentUser?.role === "FACULTY" && <AssignmentControls />}
       <br />
       <br />
       <br />
@@ -80,7 +80,7 @@ export default function Assignments() {
               <ListGroup.Item key={assignment._id} className="wd-assignment-list-item">
                 <a href={`#/Kambaz/Courses/${cid}/Assignments/${assignment._id}`} className="wd-assignment-link">
                   <BsGripVertical className="me-2 fs-3" /> <LuNotepadText className="me-2 fs-3" />
-                  {assignment.title} <AssignmentsControlButtons />
+                  {assignment.title} {currentUser?.role === "FACULTY" && <AssignmentsControlButtons />}
                 </a>
                 <p>
                   <b>Not Available</b> until {formatDate(assignment.availableDate)} | <b>Due</b> {formatDate(assignment.dueDate)} | {assignment.points} points
