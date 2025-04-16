@@ -4,15 +4,23 @@
         "quiz": "Q101",
         "title": "Easy Question",
         "points": 5,
-        "quesiton": "How much is..",
-        "correctAnswer": "it is ..."
+        "question": "How much is..",
+        "choices": [
+            { "text": "it is 5", "isCorrect": false },
+            { "text": "it is 10", "isCorrect": false },
+            { "text": "it is ...", "isCorrect": true }
+        ]
     },
     {
         "_id": "102",
         "quiz": "Q102",
         "title": "Easy Question 2",
         "points": 5,
-        "quesiton": "How much is...",
-        "correctAnswer": "this is the right answer"
+        "question": "How much is...",
+        "choices": [
+            { "text": "this is wrong", "isCorrect": false },
+            { "text": "this is the right answer", "isCorrect": true },
+            { "text": "this is incorrect", "isCorrect": false }
+        ]
     }
-  ]
+]
