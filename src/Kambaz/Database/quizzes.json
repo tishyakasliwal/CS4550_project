@@ -6,8 +6,8 @@
       "availability": "Closed",
       "dueDate": "2023-12-01",
       "points": 100,
-      "quesNum": "5",
-      "score": "90",
+      "quesNum": 5,
+      "score": 90,
       "quizType": "Graded Quiz",
       "assignmentGroup": "Quizzes",
       "shuffleAnswers": "Yes",
@@ -22,7 +22,8 @@
       "lockQuestionsAfterAnswering": "No",
       "availableDate": "2023-11-01",
       "untilDate": "2023-12-05",
-      "for": "Everyone"
+      "for": "Everyone",
+      "published": true
   },
   {
       "_id": "Q102",
@@ -31,8 +32,8 @@
       "availability": "Open",
       "dueDate": "2023-12-10",
       "points": 50,
-      "quesNum": "10",
-      "score": "45",
+      "quesNum": 10,
+      "score": 45,
       "quizType": "Practice Quiz",
       "assignmentGroup": "Exams",
       "shuffleAnswers": "No",
@@ -47,6 +48,7 @@
       "lockQuestionsAfterAnswering": "Yes",
       "availableDate": "2023-11-05",
       "untilDate": "2023-12-15",
-      "for": "Everyone"
+      "for": "Everyone",
+      "published": true
   }
 ]
