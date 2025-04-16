@@ -1,0 +1,20 @@
+[
+    {
+        "_id": "101",
+        "quiz": "Q101",
+        "title": "Easy Question",
+        "points": 5,
+        "quesiton": "How much is..",
+        "choices": ["4", "2", "3"],
+        "correctAnswer": "2"
+    },
+    {
+        "_id": "102",
+        "quiz": "Q102",
+        "title": "Easy Question 2",
+        "points": 5,
+        "quesiton": "How much is...",
+        "choices": ["4", "2", "3"],
+        "correctAnswer": "3"
+    }
+  ]

@@ -1,6 +1,6 @@
 [
   {
-      "_id": "A101",
+      "_id": "Q101",
       "title": "Propulsion Quiz",
       "course": "RS101",
       "availability": "Closed",
@@ -25,7 +25,7 @@
       "for": "Everyone"
   },
   {
-      "_id": "A102",
+      "_id": "Q102",
       "title": "Aerodynamics Quiz",
       "course": "RS102",
       "availability": "Open",
