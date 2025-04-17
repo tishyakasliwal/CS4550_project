@@ -11,9 +11,10 @@ import QuizDetails from "./Quizzes/QuizDetails";
 import QuizDetailsStudent from "./Quizzes/QuizDetailsStudent";
 import QuizEditor from "./Quizzes/QuizEditor";
 import QuestionEditor from "./Quizzes/QuestionEditor";
+import NewQuestionEditor from "./Quizzes/NewQuestionEditor";
 import People from "./People";
 
-//import QuizPreview from "./Quizzes/QuizPreview";
+import QuizPreview from "./Quizzes/QuizPreview";
 
 
 interface CoursesProps {
@@ -47,9 +48,10 @@ export default function Courses({ courses }: CoursesProps) {
 
             <Route path="Quizzes/:quizId" element={<QuizDetails />} />
             <Route path="Quizzes/:quizId/start" element={<QuizDetailsStudent />} />
-            {/* <Route path="Quizzes/:quizId/preview" element={<QuizPreview />} /> */}
+            <Route path="Quizzes/:quizId/preview" element={<QuizPreview />} />
             <Route path="Quizzes/:quizId/edit" element={<QuizEditor />} />
-            <Route path="Quizzes/:quizId/edit/questions" element={<QuestionEditor />} />
+            <Route path="Quizzes/:quizId/edit/questions/new" element={<NewQuestionEditor />} />
+            <Route path="Quizzes/:quizId/edit/questions/:type/:questionId" element={<QuestionEditor />} />
             <Route path="People" element={<People />} />
 
             

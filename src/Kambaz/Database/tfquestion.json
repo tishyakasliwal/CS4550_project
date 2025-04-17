@@ -4,15 +4,15 @@
         "quiz": "Q101",
         "title": "Easy Question",
         "points": 5,
-        "question": "How much is..",
-        "correctAnswer": true
+        "question": "There are 12 months in a year.",
+        "correctAnswer": "True"
     },
     {
         "_id": "102",
         "quiz": "Q102",
         "title": "Easy Question 2",
         "points": 5,
-        "question": "How much is...",
-        "correctAnswer": false
+        "question": "100 x 20 = 200",
+        "correctAnswer": "False"
     }
   ]

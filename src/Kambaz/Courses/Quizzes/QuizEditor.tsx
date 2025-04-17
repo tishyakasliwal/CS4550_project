@@ -1,25 +1,60 @@
-import { useState } from "react";
-import { useParams, Link, useNavigate } from "react-router-dom";
-import { Form, Card, Button } from "react-bootstrap";
-import { quizzes } from "../../Database";
+import { Form, Card, Button, ListGroup } from "react-bootstrap";
+import { FaPencilAlt } from "react-icons/fa";
+import * as quizzesClient from "./client"; // Import client for fetching questions
+import { useNavigate, useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
 
 export default function QuizEditor() {
   const { cid, quizId } = useParams();
   const [activeTab, setActiveTab] = useState("details");
+  const [questions, setQuestions] = useState<any[]>([]); // Store combined questions
   const navigate = useNavigate();
-  const quiz = quizzes.find((q) => q._id === quizId && q.course === cid);
+  const [quiz, setQuiz] = useState<any>(null); // Store quiz details
 
-  if (!quiz) {
-    return <div>Quiz not found</div>;
-  }
+  useEffect(() => {
+    const fetchQuizDetails = async () => {
+      try {
+        // Fetch quiz details
+        const quizData = await quizzesClient.findQuizById(quizId!);
+        setQuiz(quizData);
 
-  const handleTabClick = (tab: any) => {
+        // Fetch questions by type
+        const { mcqQuestions, fillInQuestions, tfQuestions } =
+          await quizzesClient.findQuestionsForQuiz(quizId!);
+
+        // Combine all questions into a single array with a `type` field
+        const combinedQuestions = [
+          ...mcqQuestions.map((q: any) => ({ ...q, type: "MCQ" })),
+          ...fillInQuestions.map((q: any) => ({ ...q, type: "FILL_IN_THE_BLANK" })),
+          ...tfQuestions.map((q: any) => ({ ...q, type: "TRUE_FALSE" })),
+        ];
+
+        setQuestions(combinedQuestions);
+      } catch (error) {
+        console.error("Error fetching quiz details or questions:", error);
+      }
+    };
+
+    if (quizId) {
+      fetchQuizDetails();
+    }
+  }, [quizId]);
+
+  const handleTabClick = (tab: string) => {
     setActiveTab(tab);
   };
 
-  const handleQuestionClick = () => {
-    navigate(`/Kambaz/Courses/${cid}/Quizzes/${quizId}/edit/questions`);
+  const handleEditQuestion = (questionId: string, questionType: string) => {
+    navigate(`/Kambaz/Courses/${cid}/Quizzes/${quizId}/edit/questions/${questionType}/${questionId}`);
   };
+
+  const handleAddNewQuestion = () => {
+    navigate(`/Kambaz/Courses/${cid}/Quizzes/${quizId}/edit/questions/new`);
+  };
+
+  if (!quiz) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div
@@ -330,37 +365,27 @@ export default function QuizEditor() {
         // Questions Tab
         <div>
           <div className="d-flex justify-content-center my-5">
-            <Button
-              variant="outline-secondary"
-              className="btn-lg"
-              onClick={handleQuestionClick}
-            >
+            <Button variant="outline-secondary" className="btn-lg" onClick={handleAddNewQuestion}>
               <i className="fas fa-plus me-2"></i> New Question
             </Button>
           </div>
-          <div className="text-center text-muted">
-            Currently {quiz.quesNum} questions • {quiz.points} points total
-          </div>
+          <ListGroup>
+            {questions.map((question) => (
+              <ListGroup.Item key={question._id} className="d-flex justify-content-between align-items-center">
+                <span>
+                  {question.type === "MCQ" && "MCQ: "}
+                  {question.type === "FILL_IN_THE_BLANK" && "Fill-in-the-Blank: "}
+                  {question.type === "TRUE_FALSE" && "True/False: "}
+                  {question.question}
+                </span>
+                <Button variant="outline-primary" size="sm" onClick={() => handleEditQuestion(question._id, question.type)}>
+                  <FaPencilAlt />
+                </Button>
+              </ListGroup.Item>
+            ))}
+          </ListGroup>
         </div>
       )}
-
-      <div className="d-flex border-top pt-3 mt-4 justify-content-between">
-        {activeTab === "details" ? (
-          <button className="btn btn-outline-secondary">
-            <i className="fas fa-plus"></i> Add
-          </button>
-        ) : (
-          <div></div> // Empty div for spacing purposes
-        )}
-        <div className="d-flex gap-2">
-          <Link to={`/Courses/${cid}/Quizzes`} className="btn btn-secondary">
-            Cancel
-          </Link>
-          <Link to={`/Courses/${cid}/Quizzes`} className="btn btn-danger">
-            Save
-          </Link>
-        </div>
-      </div>
     </div>
   );
 }

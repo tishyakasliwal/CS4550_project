@@ -1,16 +1,19 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { Form, Button, Col, Row } from "react-bootstrap";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { FaTrash } from "react-icons/fa";
 import * as quizzesClient from "./client";
 
 export default function QuestionEditor() {
-  const { cid, quizId, questionId, type } = useParams();
+  const { cid, quizId } = useParams();
   const navigate = useNavigate();
 
-  // State for the question
-  interface Question {
+  // State for the question type
+  const [type, setType] = useState<"MCQ" | "TRUE_FALSE" | "FILL_IN_THE_BLANK">("MCQ");
+
+    // State for the question
+interface Question {
     _id: string;
     quiz: string | undefined;
     title: string;
@@ -19,76 +22,41 @@ export default function QuestionEditor() {
     choices?: { choice: string; isCorrect: boolean }[];
     correctAnswer?: string;
     correctChoices?: string[];
-  }
+    }
 
-  const [question, setQuestion] = useState<Question>(
-    type === "MCQ"
-      ? {
-          _id: uuidv4(),
-          quiz: quizId,
-          title: "",
-          points: 0,
-          question: "",
-          choices: [], // Array of { choice: string, isCorrect: boolean }
-        }
-      : type === "TRUE_FALSE"
-      ? {
-          _id: uuidv4(),
-          quiz: quizId,
-          title: "",
-          points: 0,
-          question: "",
-          correctAnswer: "", // "True" or "False"
-        }
-      : type === "FILL_IN_THE_BLANK"
-      ? {
-          _id: uuidv4(),
-          quiz: quizId,
-          title: "",
-          points: 0,
-          question: "",
-          correctChoices: [], // Array of correct answers
-        }
-        :{
-            _id: uuidv4(),
-            quiz: quizId,
-            title: "",
-            points: 0,
-            question: "",
-            choices: [], //MCQ by default]
-        }
-  );
+  // State for the question
+  const [question, setQuestion] = useState<Question>({
+    _id: uuidv4(),
+    quiz: quizId,
+    title: "",
+    points: 0,
+    question: "",
+    choices: [], // For MCQ
+    correctAnswer: "", // For True/False
+    correctChoices: [], // For Fill-in-the-Blank
+  });
 
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const handleTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedType = e.target.value as "MCQ" | "TRUE_FALSE" | "FILL_IN_THE_BLANK";
+    setType(selectedType);
 
-  useEffect(() => {
-    const fetchQuestion = async () => {
-      if (questionId && questionId !== "new") {
-        try {
-          let fetchedQuestion;
-          
-          fetchedQuestion = await quizzesClient.findQuestionById(questionId, type || "MCQ");
-          
-          setQuestion(fetchedQuestion);
-        } catch (err) {
-          console.error("Error fetching question:", err);
-          setError("Failed to load question.");
-        } finally {
-          setLoading(false);
-        }
-      } else {
-        setLoading(false);
-      }
-    };
+    // Reset the question state based on the selected type
+    setQuestion({
+      _id: uuidv4(),
+      quiz: quizId,
+      title: "",
+      points: 0,
+      question: "",
+      ...(selectedType === "MCQ" && { choices: [] }),
+      ...(selectedType === "TRUE_FALSE" && { correctAnswer: "" }),
+      ...(selectedType === "FILL_IN_THE_BLANK" && { correctChoices: [] }),
+    });
+  };
 
-    fetchQuestion();
-  }, [questionId, type]);
-
-//   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-//     const { id, value } = e.target;
-//     setQuestion((prev) => ({ ...prev, [id]: value }));
-//   };
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { id, value } = e.target;
+    setQuestion((prev) => ({ ...prev, [id]: value }));
+  };
 
   const handleAddChoice = () => {
     if (type === "MCQ") {
@@ -155,43 +123,49 @@ export default function QuestionEditor() {
 
   const handleSave = async () => {
     try {
-      if (questionId === "new") {
-        if (type === "MCQ") {
-          await quizzesClient.createMCQQuestion(question);
-        } else if (type === "TRUE_FALSE") {
-          await quizzesClient.createTFQuestion(question);
-        } else if (type === "FILL_IN_THE_BLANK") {
-          await quizzesClient.createFillInQuestion(question);
-        }
-      } else {
-        if (type === "MCQ") {
-          await quizzesClient.updateMCQQuestion(questionId!, question);
-        } else if (type === "TRUE_FALSE") {
-          await quizzesClient.updateTFQuestion(questionId!, question);
-        } else if (type === "FILL_IN_THE_BLANK") {
-          await quizzesClient.updateFillInQuestion(questionId!, question);
-        }
+      if (type === "MCQ") {
+        await quizzesClient.createMCQQuestion(question);
+      } else if (type === "TRUE_FALSE") {
+        await quizzesClient.createTFQuestion(question);
+      } else if (type === "FILL_IN_THE_BLANK") {
+        await quizzesClient.createFillInQuestion(question);
       }
       navigate(`/Kambaz/Courses/${cid}/Quizzes/${quizId}/edit`);
     } catch (err) {
       console.error("Error saving question:", err);
-      setError("Failed to save question.");
     }
   };
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  if (error) {
-    return <div>{error}</div>;
-  }
-
   return (
     <div id="wd-quizzes-question-editor" className="p-4">
-      <h3>{questionId === "new" ? "Add New Question" : "Edit Question"}</h3>
+      <h3>Add New Question</h3>
       <Form>
-    
+        <Form.Group className="mb-3">
+          <Form.Label>Type</Form.Label>
+          <Form.Select value={type} onChange={handleTypeChange}>
+            <option value="MCQ">Multiple Choice</option>
+            <option value="TRUE_FALSE">True/False</option>
+            <option value="FILL_IN_THE_BLANK">Fill in the Blank</option>
+          </Form.Select>
+        </Form.Group>
+        <Form.Group className="mb-3">
+          <Form.Label>Question</Form.Label>
+          <Form.Control
+            as="textarea"
+            id="question"
+            value={question.question}
+            onChange={handleChange}
+          />
+        </Form.Group>
+        <Form.Group className="mb-3">
+          <Form.Label>Points</Form.Label>
+          <Form.Control
+            type="number"
+            id="points"
+            value={question.points}
+            onChange={handleChange}
+          />
+        </Form.Group>
 
         {type === "MCQ" && (
           <div>
@@ -201,7 +175,7 @@ export default function QuestionEditor() {
                 <Col sm={8}>
                   <Form.Control
                     type="text"
-                    value={choice.text}
+                    value={choice.choice}
                     onChange={(e) => handleChoiceChange(index, e.target.value)}
                   />
                 </Col>

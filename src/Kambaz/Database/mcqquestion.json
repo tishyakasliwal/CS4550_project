@@ -4,11 +4,11 @@
         "quiz": "Q101",
         "title": "Easy Question",
         "points": 5,
-        "question": "How much is..",
+        "question": "How much is 2 + 1?",
         "choices": [
             { "text": "4", "isCorrect": false },
-            { "text": "2", "isCorrect": true },
-            { "text": "3", "isCorrect": false }
+            { "text": "2", "isCorrect": false },
+            { "text": "3", "isCorrect": true }
         ]
     },
     {
@@ -16,7 +16,7 @@
         "quiz": "Q102",
         "title": "Easy Question 2",
         "points": 5,
-        "question": "How much is...",
+        "question": "How much is 1+1?",
         "choices": [
             { "text": "4", "isCorrect": false },
             { "text": "2", "isCorrect": false },
