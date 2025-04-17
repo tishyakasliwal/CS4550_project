@@ -31,8 +31,9 @@ export default function Quizzes() {
     setShowModal(false);
   };
 
+
   const handleEdit = (quiz: any) => {
-    navigate(`/Kambaz/Courses/${cid}/Quizzes/${quiz._id}`);
+    navigate(`/Kambaz/Courses/${cid}/Quizzes/${quiz._id}/edit`);
   };
 
   const handlePublish = (quiz: any) => {
@@ -42,7 +43,8 @@ export default function Quizzes() {
 
   return (
     <div id="wd-quizzes">
-      <QuizzesControls /><br /><br /><br /><br />
+      {currentUser?.role === "FACULTY" && <QuizzesControls />}
+      <br /><br /><br /><br />
 
       <ListGroup className="rounded-0" id="wd-quizzes">
         <ListGroup.Item className="wd-quizzes p-0 mb-5 fs-5 border-gray">

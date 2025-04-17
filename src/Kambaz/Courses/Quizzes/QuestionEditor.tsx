@@ -4,9 +4,14 @@ import { useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 import { FaTrash } from "react-icons/fa";
 import * as quizzesClient from "./client";
+import { useDispatch, useSelector } from "react-redux";
+import { updateQuiz } from "./reducer";
 
 export default function QuestionEditor() {
   const { cid, quizId, questionId, type } = useParams();
+  const dispatch = useDispatch();
+  const quizzes = useSelector((state: any) => state.quizzesReducer.quizzes);
+  const currentQuiz = quizzes.find((quiz: any) => quiz._id === quizId);
   const navigate = useNavigate();
 
   // State for the question
@@ -156,6 +161,17 @@ export default function QuestionEditor() {
   const handleSave = async () => {
     try {
       if (questionId === "new") {
+        if (currentQuiz && quizId) {
+            //  update the quiz in backend
+            await quizzesClient.updateQuiz(quizId, { quesNum: (currentQuiz.quesNum || 0) + 1 });
+            // directly update the quiz with the incremented count
+            dispatch(updateQuiz({
+              ...currentQuiz,
+              quesNum: (currentQuiz.quesNum || 0) + 1
+            }));
+            
+          }
+
         if (type === "MCQ") {
           await quizzesClient.createMCQQuestion(question);
         } else if (type === "TRUE_FALSE") {

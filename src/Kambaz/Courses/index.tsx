@@ -44,8 +44,9 @@ export default function Courses({ courses }: CoursesProps) {
             <Route path="Modules" element={<Modules />} />
             <Route path="Assignments" element={<Assignments />} />
             <Route path="Assignments/:aid" element={<AssignmentEditor />} />
-            <Route path="Quizzes" element={<Quizzes />} />
 
+            <Route path="Quizzes/new" element={<QuizEditor />} /> 
+            <Route path="Quizzes" element={<Quizzes />} />
             <Route path="Quizzes/:quizId" element={<QuizDetails />} />
             <Route path="Quizzes/:quizId/start" element={<QuizDetailsStudent />} />
             <Route path="Quizzes/:quizId/preview" element={<QuizPreview />} />

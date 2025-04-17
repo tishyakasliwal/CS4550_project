@@ -3,8 +3,8 @@ import { quizzes } from "../../Database";
 import { v4 as uuidv4 } from "uuid";
 
 const initialState = {
-  quizzes: quizzes,
-  //quizzes: [], for empty list
+  quizzes: quizzes || [],
+  // quizzes: [], 
 };
 
 const quizzesSlice = createSlice({
