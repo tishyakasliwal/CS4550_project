@@ -22,23 +22,27 @@ export default function QuizEditor() {
     _id: uuidv4(),
     title: "New Quiz",
     course: cid,
+    description: "",
     availability: "Available",
     dueDate: "",
-    points: "10",
+    points: 10,
     quesNum: 0,
-    score: "0",
+    score: 0,
     quizType: "Graded Quiz",
     assignmentGroup: "Quizzes",
     shuffleAnswers: "Yes",
     timeLimit: 20,
     multipleAttempts: "No",
-    viewResponses: "No",
+    numOfAttemps: 0,
+    viewResponses: "After Due Date",
+    showCorrectAnswers: "After Submission",
+    accessCode: "",
     oneQuestionAtATime: "No",
+    viewResults: "Yes",
     webcamRequired: "No",
     lockQuestionsAfterAnswering: "No",
     availableDate: "",
     untilDate: "",
-    for: "Everyone",
     published: false,
   });
 
@@ -75,43 +79,45 @@ export default function QuizEditor() {
     fetchQuizDetails();
   }, [quizId]);
 
-  
-
   const handleSave = async () => {
     try {
-    if (quizId !== "new") {
-      await quizzesClient.updateQuiz(quiz._id, quiz);
-      dispatch(updateQuiz(quiz));
-    } else {
-      //   await quizzesClient.createQuiz(quiz);
-      // dispatch(addQuiz({ ...quiz, course: cid }));
-      const newQuiz = { ...quiz, course: cid };
-      const createdQuiz = await quizzesClient.createQuiz(newQuiz);
-      dispatch(addQuiz(createdQuiz));
+      console.log("quizId value:", quizId);
+      
+      // Check if this is a new quiz (either quizId is "new" or undefined)
+      const isNewQuiz = !quizId || quizId === "new";
+      console.log("Is this a new quiz?", isNewQuiz);
+      
+      if (isNewQuiz) {
+        // Create new quiz
+        const newQuiz = { ...quiz, course: cid };
+        console.log("Creating new quiz:", newQuiz);
+        
+        try {
+          const createdQuiz = await quizzesClient.createQuiz(newQuiz);
+          console.log("Quiz created:", createdQuiz);
+          dispatch(addQuiz(createdQuiz));
+        } catch (apiError) {
+          console.error("API error creating quiz:", apiError);
+          throw apiError;
+        }
+      } else {
+        // Update existing quiz
+        console.log("Updating quiz:", quiz._id);
+        await quizzesClient.updateQuiz(quiz._id, quiz);
+        dispatch(updateQuiz(quiz));
+      }
+      
+      navigate(`/Kambaz/Courses/${cid}/Quizzes`);
+    } catch (err) {
+      console.error("Error saving quiz:", err);
+      setError("Failed to save quiz.");
     }
-    navigate(`/Kambaz/Courses/${cid}/Quizzes`);
-  } catch (err) {
-    console.error("Error saving quiz:", err);
-    setError("Failed to save quiz.");
-  }
   };
 
-  // const handleSave = async () => {
-  //   try {
-  //     let savedQuizId;
-  //     if (quizId === "new") {
-  //       //await quizzesClient.createQuiz(quiz);
-  //       const newQuiz = await quizzesClient.createQuiz(quiz);
-  //       savedQuizId = newQuiz._id;
-  //     } else {
-  //       await quizzesClient.updateQuiz(quiz._id, quiz);
-  //     }
-  //     navigate(`/Kambaz/Courses/${cid}/Quizzes`);
-  //   } catch (err) {
-  //     console.error("Error saving quiz:", err);
-  //     setError("Failed to save quiz.");
-  //   }
-  // };
+
+  if (error) {
+    return <div className="text-danger">{error}</div>;
+  }
 
   const handleTabClick = (tab: string) => {
     setActiveTab(tab);
@@ -132,6 +138,10 @@ export default function QuizEditor() {
       [id]: value,
     }));
   };
+
+  // const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  //   setQuiz({ ...quiz, [e.target.name]: e.target.value})
+  // }
   
 
   if (!quiz) {
@@ -202,7 +212,7 @@ export default function QuizEditor() {
           <Form.Group className="mb-4">
             <Form.Control
               type="text"
-              id="wd-quiz-name"
+              id="title"
               value={quiz.title}
               className="w-100"
               onChange={handleChange}
@@ -297,11 +307,11 @@ export default function QuizEditor() {
           <div className="row mb-4">
             <div className="col-md-6">
               <Form.Group>
-                <Form.Label htmlFor="wd-quiz-type" className="fw-bold">
+                <Form.Label htmlFor="quizType" className="fw-bold">
                   Quiz Type
                 </Form.Label>
                 <Form.Select
-                  id="wd-quiz-type"
+                  id="quizType"
                   className="w-100"
                   value={quiz.quizType}
                   onChange={handleChange}
@@ -317,11 +327,11 @@ export default function QuizEditor() {
           <div className="row mb-4">
             <div className="col-md-6">
               <Form.Group>
-                <Form.Label htmlFor="wd-assignment-group" className="fw-bold">
+                <Form.Label htmlFor="assignmentGroup" className="fw-bold">
                   Assignment Group
                 </Form.Label>
                 <Form.Select
-                  id="wd-assignment-group"
+                  id="assignmentGroup"
                   className="w-100"
                   value={quiz.assignmentGroup}
                   onChange={handleChange}
@@ -350,7 +360,7 @@ export default function QuizEditor() {
               <div className="d-flex align-items-center mb-3">
                 <Form.Check
                   type="checkbox"
-                  id="wd-time-limit"
+                  id="time-limit"
                   label="Time Limit"
                   className="me-2"
                   defaultChecked={quiz.timeLimit > 0}
@@ -358,6 +368,7 @@ export default function QuizEditor() {
                 />
                 <Form.Control
                   type="text"
+                  id="timeLimit"
                   style={{ width: "60px" }}
                   className="me-2"
                   value={quiz.timeLimit || ""}
@@ -368,10 +379,10 @@ export default function QuizEditor() {
 
               <Form.Check
                 type="checkbox"
-                id="wd-multiple-attempts"
+                id="multipleAttempts"
                 label="Allow Multiple Attempts"
                 className="mb-2"
-                defaultChecked={quiz.multipleAttempts === "Yes"}
+                checked={quiz.multipleAttempts === "Yes"}
                 onChange={handleChange}
               />
             </Card.Body>
@@ -383,15 +394,10 @@ export default function QuizEditor() {
                 <Form.Label htmlFor="wd-assign-to" className="fw-bold">
                   Assign to
                 </Form.Label>
-                <div className="position-relative">
-                  <span className="border rounded p-2 d-flex align-items-center">
-                    Everyone X
-                  </span>
-                  {/* <div className="border rounded p-2 d-flex align-items-center">
-                    <span>{quiz.for}</span>
-                    <button className="btn btn-sm ms-auto">×</button>
-                  </div> */}
-                </div>
+                  <div className="border rounded p-2 d-flex align-items-center">
+                    <span>Everyone</span>
+                    <button className="btn btn-m ms-left">×</button>
+                  </div>
               </Form.Group>
 
               <Form.Group className="mb-4">
@@ -401,7 +407,7 @@ export default function QuizEditor() {
                 <div className="input-group">
                   <Form.Control
                     type="text"
-                    id="wd-due-date"
+                    id="dueDate"
                     className="w-100"
                     value={quiz.dueDate}
                     onChange={handleChange}
@@ -421,7 +427,7 @@ export default function QuizEditor() {
                     <div className="input-group">
                       <Form.Control
                         type="text"
-                        id="wd-available-from"
+                        id="availableDate"
                         className="w-100"
                         value={quiz.availableDate}
                         onChange={handleChange}
@@ -443,7 +449,7 @@ export default function QuizEditor() {
                     <div className="input-group">
                       <Form.Control
                         type="text"
-                        id="wd-available-until"
+                        id="untilDate"
                         className="w-100"
                         value={quiz.untilDate}
                         onChange={handleChange}

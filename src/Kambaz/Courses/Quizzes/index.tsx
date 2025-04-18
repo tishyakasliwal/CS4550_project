@@ -6,20 +6,40 @@ import { GoRocket } from "react-icons/go";
 import { Link, useParams } from "react-router-dom";
 import "../../styles.css";
 import { useDispatch, useSelector } from "react-redux";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import QuizzesControls from "./QuizzesControls";
-import { deleteQuiz, updateQuiz } from "./reducer";
+import { deleteQuiz, setQuizzes, updateQuiz } from "./reducer";
 import { useNavigate } from "react-router-dom";
-
+import * as quizzesClient from "./client";
 
 export default function Quizzes() {
-  const { cid } = useParams<{ cid: string }>();
+  const { cid } = useParams<{ cid?: string }>();
   const quizzes = useSelector((state: any) => state.quizzesReducer.quizzes);
   const courseQuizzes = quizzes.filter((quiz: any) => quiz.course === cid);
   const dispatch = useDispatch();
   const [showModal, setShowModal] = useState(false);
   const [selectedQuiz, setSelectedQuiz] = useState<any>(null);
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+      const fetchQuizzes = async () => {
+        try {
+          if (cid) {
+            console.log("Fetching quizzes for course:", cid);
+            const courseQuizzes = await quizzesClient.findQuizzesForCourse(cid);
+            console.log("Fetched quizzes:", courseQuizzes);
+            dispatch(setQuizzes(courseQuizzes));
+          }
+        } catch (error) {
+          console.error("Error fetching quizzes:", error);
+        } finally {
+          setLoading(false);
+        }
+      };
+  
+      fetchQuizzes();
+    }, [cid]);
 
   const handleDelete = (quiz: any) => {
     setSelectedQuiz(quiz);

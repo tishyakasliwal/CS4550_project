@@ -1,10 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { quizzes } from "../../Database";
 import { v4 as uuidv4 } from "uuid";
 
 const initialState = {
-  quizzes: quizzes || [],
-  // quizzes: [], 
+  quizzes: [],
 };
 
 const quizzesSlice = createSlice({
@@ -20,6 +18,7 @@ const quizzesSlice = createSlice({
         _id: uuidv4(),
         title: quiz.title,
         course: quiz.course,
+        description: quiz.description,
         availability: quiz.availability,
         dueDate: quiz.dueDate,
         points: quiz.points,
@@ -30,17 +29,23 @@ const quizzesSlice = createSlice({
         shuffleAnswers: quiz.shuffleAnswers,
         timeLimit: quiz.timeLimit,
         multipleAttempts: quiz.multipleAttempts,
+        numOfAttemps: quiz.numOfAttempts,
         viewResponses: quiz.viewResponses,
+        showCorrectAnswers: quiz.showCorrectAnswers,
+        accessCode: quiz.accessCode,
         oneQuestionAtATime: quiz.oneQuestionAtATime,
+        viewResults: quiz.viewResults,
         webcamRequired: quiz.webcamRequired,
         lockQuestionsAfterAnswering: quiz.lockQuestionsAfterAnswering,
         availableDate: quiz.availableDate,
         untilDate: quiz.untilDate,
-        for: quiz.for,
         published: quiz.published,
       };
       state.quizzes = [...state.quizzes, newQuiz] as any;
     },
+
+
+
     deleteQuiz: (state, { payload: quizId }) => {
       state.quizzes = state.quizzes.filter(
         (q: any) => q._id !== quizId
@@ -56,7 +61,7 @@ const quizzesSlice = createSlice({
         q._id === quizId ? { ...q, editing: true } : q
       ) as any;
     },
-    
+
     publishQuiz: (state, { payload: quizId }) => {
       state.quizzes = state.quizzes.map((q: any) =>
         q._id === quizId ? { ...q, published: !q.published } : q

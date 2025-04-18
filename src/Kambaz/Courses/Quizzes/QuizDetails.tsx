@@ -57,7 +57,7 @@ export default function QuizDetails() {
           { label: "View Responses", value: quiz.viewResults },
           { label: "Show Correct Answers", value: quiz.showCorrectAnswers },
           { label: "One Question at a Time", value: quiz.oneQuestionAtATime },
-          { label: "Requires Respondus LockDown Browser", value: quiz.respondusLockdownBrowser },
+          { label: "Requires Respondus LockDown Browser", value: "No" },
           { label: "Require to View Quiz Results", value: quiz.viewResults },
           { label: "Webcam Required", value: quiz.webcamRequired },
           { label: "Lock Questions After Answering", value: quiz.lockQuestionsAfterAnswering },

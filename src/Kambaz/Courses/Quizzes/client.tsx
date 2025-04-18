@@ -8,9 +8,23 @@ const MCQ_API = `${import.meta.env.VITE_REMOTE_SERVER}/api/mcq`;
 const FILL_IN_THE_BLANK_API = `${import.meta.env.VITE_REMOTE_SERVER}/api/fillinquestions`;
 const TRUE_FALSE_API = `${import.meta.env.VITE_REMOTE_SERVER}/api/tfquestions`;
 
+// export const createQuiz = async (quiz: any) => {
+//     const response = await axiosWithCredentials.post(QUIZZES_API, quiz);
+//     return response.data;
+// };
+
 export const createQuiz = async (quiz: any) => {
-    const response = await axiosWithCredentials.post(QUIZZES_API, quiz);
-    return response.data;
+    console.log("Creating quiz with URL:", `${import.meta.env.VITE_REMOTE_SERVER}/api/quizzes`);
+    console.log("Quiz data being sent:", quiz);
+    try {
+        const response = await axiosWithCredentials.post(QUIZZES_API, quiz);
+        console.log("Successfully created quiz:", response.data);
+        return response.data;
+    } catch (error: any) {
+        console.error("Response status:", error.response?.status);
+        console.error("Response data:", error.response?.data);
+        throw error;
+    }
 };
 
 export const updateQuiz = async (quizId: string, quiz: any) => {
