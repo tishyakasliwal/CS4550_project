@@ -8,6 +8,7 @@ import { v4 as uuidv4 } from "uuid";
 import { updateQuiz, addQuiz }
   from "./reducer";
 
+
 export default function QuizEditor() {
   const { cid, quizId } = useParams();
   const [activeTab, setActiveTab] = useState("details");
@@ -16,8 +17,6 @@ export default function QuizEditor() {
   const dispatch = useDispatch();
   const [error, setError] = useState<string | null>(null);
 
-  //const [quiz, setQuiz] = useState<any>(null); // Store quiz details
-  
   const [quiz, setQuiz] = useState({
     _id: uuidv4(),
     title: "New Quiz",
@@ -72,45 +71,40 @@ export default function QuizEditor() {
         }
       }
     };
-
-    // if (quizId) {
-    //   fetchQuizDetails();
-    // }
     fetchQuizDetails();
   }, [quizId]);
 
-  const handleSave = async () => {
+
+  const handleSaveQuiz = async (shouldPublish: boolean = false) => {
     try {
-      console.log("quizId value:", quizId);
-      
-      // Check if this is a new quiz (either quizId is "new" or undefined)
       const isNewQuiz = !quizId || quizId === "new";
-      console.log("Is this a new quiz?", isNewQuiz);
-      
+      const quizToSave = {
+        ...quiz,
+        course: cid,
+        published: shouldPublish
+      };
+
+      let savedQuiz;
+
       if (isNewQuiz) {
-        // Create new quiz
-        const newQuiz = { ...quiz, course: cid };
-        console.log("Creating new quiz:", newQuiz);
-        
-        try {
-          const createdQuiz = await quizzesClient.createQuiz(newQuiz);
-          console.log("Quiz created:", createdQuiz);
-          dispatch(addQuiz(createdQuiz));
-        } catch (apiError) {
-          console.error("API error creating quiz:", apiError);
-          throw apiError;
-        }
+        // create new quiz
+        savedQuiz = await quizzesClient.createQuiz(quizToSave);
+        dispatch(addQuiz(savedQuiz));
       } else {
-        // Update existing quiz
-        console.log("Updating quiz:", quiz._id);
-        await quizzesClient.updateQuiz(quiz._id, quiz);
-        dispatch(updateQuiz(quiz));
+        // update existing quiz
+        await quizzesClient.updateQuiz(quiz._id, quizToSave);
+        savedQuiz = quizToSave;
+        dispatch(updateQuiz(quizToSave));
       }
-      
-      navigate(`/Kambaz/Courses/${cid}/Quizzes`);
+
+      if (shouldPublish) {
+        navigate(`/Kambaz/Courses/${cid}/Quizzes`);
+      } else {
+        navigate(`/Kambaz/Courses/${cid}/Quizzes/${savedQuiz._id}`);
+      }
     } catch (err) {
-      console.error("Error saving quiz:", err);
-      setError("Failed to save quiz.");
+      console.error(`Error ${shouldPublish ? 'publishing' : 'saving'} quiz:`, err);
+      setError(`Failed to ${shouldPublish ? 'publish' : 'save'} quiz.`);
     }
   };
 
@@ -139,10 +133,13 @@ export default function QuizEditor() {
     }));
   };
 
-  // const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-  //   setQuiz({ ...quiz, [e.target.name]: e.target.value})
-  // }
-  
+  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { id, checked } = e.target;
+    setQuiz((prevQuiz) => ({
+      ...prevQuiz,
+      [id]: checked ? "Yes" : "No",
+    }));
+  };
 
   if (!quiz) {
     return <div>Loading...</div>;
@@ -163,6 +160,7 @@ export default function QuizEditor() {
           <input
             type="text"
             className="form-control"
+            id="points"
             value={quiz.points}
             style={{ width: "60px" }}
             onChange={handleChange}
@@ -282,9 +280,11 @@ export default function QuizEditor() {
               </div>
               <Form.Control
                 as="textarea"
-                id="wd-instructions"
+                id="description"
                 rows={5}
                 className="w-100 border-0"
+                value={quiz.description}
+                onChange={handleChange}
               />
             </div>
             <div className="d-flex justify-content-between align-items-center text-muted">
@@ -319,6 +319,7 @@ export default function QuizEditor() {
                   <option value="Graded Quiz">Graded Quiz</option>
                   <option value="Practice Quiz">Practice Quiz</option>
                   <option value="Survey">Survey</option>
+                  <option value="Ungraded Survey">Ungraded Survey</option>
                 </Form.Select>
               </Form.Group>
             </div>
@@ -347,14 +348,14 @@ export default function QuizEditor() {
 
           <Card className="mb-4">
             <Card.Body>
-              <h5 className="mb-3">Options</h5>
+              <h5 className="mb-3 fw-bold">Options</h5>
               <Form.Check
                 type="checkbox"
                 id="wd-shuffle-answers"
                 label="Shuffle Answers"
                 className="mb-3"
                 defaultChecked={quiz.shuffleAnswers === "Yes"}
-                onChange={handleChange}
+                onChange={handleCheckboxChange}
               />
 
               <div className="d-flex align-items-center mb-3">
@@ -364,7 +365,14 @@ export default function QuizEditor() {
                   label="Time Limit"
                   className="me-2"
                   defaultChecked={quiz.timeLimit > 0}
-                  onChange={handleChange}
+                  // onChange={handleChange}
+                  onChange={(e) => {
+                    const checked = e.target.checked;
+                    setQuiz((prevQuiz) => ({
+                      ...prevQuiz,
+                      timeLimit: checked ? 20 : 0,
+                    }));
+                  }}
                 />
                 <Form.Control
                   type="text"
@@ -383,10 +391,73 @@ export default function QuizEditor() {
                 label="Allow Multiple Attempts"
                 className="mb-2"
                 checked={quiz.multipleAttempts === "Yes"}
-                onChange={handleChange}
+                onChange={handleCheckboxChange}
               />
+
+              <Form.Group className="mb-3">
+                <Form.Label htmlFor="showCorrectAnswers" className="mt-2 fw-bold">
+                  Show Correct Answers
+                </Form.Label>
+                <Form.Select
+                  id="showCorrectAnswers"
+                  className="w-50"
+                  value={quiz.showCorrectAnswers}
+                  onChange={handleChange}
+                >
+                  <option value="After Submission">After Submission</option>
+                  <option value="After Due Date">After Due Date</option>
+                  <option value="After Last Attempt">After Last Attempt</option>
+                  <option value="Never">Never</option>
+                </Form.Select>
+              </Form.Group>
+
+              <Form.Group className="mb-3">
+                <Form.Label htmlFor="accessCode" className="fw-bold">
+                  Access Code
+                </Form.Label>
+                <Form.Control
+                  type="text"
+                  id="accessCode"
+                  placeholder="Blank for no access code"
+                  value={quiz.accessCode}
+                  onChange={handleChange}
+                />
+              </Form.Group>
+
+              <Form.Group className="mb-3">
+                <Form.Check
+                  type="checkbox"
+                  id="oneQuestionAtATime"
+                  label="One Question at a Time"
+                  checked={quiz.oneQuestionAtATime === "Yes"}
+                  onChange={handleCheckboxChange}
+                />
+              </Form.Group>
+
+              <Form.Group className="mb-3">
+                <Form.Check
+                  type="checkbox"
+                  id="webcamRequired"
+                  label="Webcam Required"
+                  checked={quiz.webcamRequired === "Yes"}
+                  onChange={handleCheckboxChange}
+                />
+              </Form.Group>
+
+              <Form.Group className="mb-3">
+                <Form.Check
+                  type="checkbox"
+                  id="lockQuestionsAfterAnswering"
+                  label="Lock Questions After Answering"
+                  checked={quiz.lockQuestionsAfterAnswering === "Yes"}
+                  onChange={handleCheckboxChange}
+                />
+              </Form.Group>
+
             </Card.Body>
           </Card>
+
+
 
           <Card className="mb-4">
             <Card.Body>
@@ -394,10 +465,10 @@ export default function QuizEditor() {
                 <Form.Label htmlFor="wd-assign-to" className="fw-bold">
                   Assign to
                 </Form.Label>
-                  <div className="border rounded p-2 d-flex align-items-center">
-                    <span>Everyone</span>
-                    <button className="btn btn-m ms-left">×</button>
-                  </div>
+                <div className="border rounded p-2 d-flex align-items-center">
+                  <span>Everyone</span>
+                  <button className="btn btn-m ms-left">×</button>
+                </div>
               </Form.Group>
 
               <Form.Group className="mb-4">
@@ -406,15 +477,13 @@ export default function QuizEditor() {
                 </Form.Label>
                 <div className="input-group">
                   <Form.Control
-                    type="text"
+                    type="date"
                     id="dueDate"
-                    className="w-100"
+                    className="w-50"
                     value={quiz.dueDate}
                     onChange={handleChange}
                   />
-                  <button className="btn btn-outline-secondary">
-                    <i className="fas fa-calendar"></i>
-                  </button>
+
                 </div>
               </Form.Group>
 
@@ -426,15 +495,12 @@ export default function QuizEditor() {
                     </Form.Label>
                     <div className="input-group">
                       <Form.Control
-                        type="text"
+                        type="date"
                         id="availableDate"
-                        className="w-100"
+                        className="w-50"
                         value={quiz.availableDate}
                         onChange={handleChange}
                       />
-                      <button className="btn btn-outline-secondary">
-                        <i className="fas fa-calendar"></i>
-                      </button>
                     </div>
                   </Form.Group>
                 </div>
@@ -448,15 +514,12 @@ export default function QuizEditor() {
                     </Form.Label>
                     <div className="input-group">
                       <Form.Control
-                        type="text"
+                        type="date"
                         id="untilDate"
-                        className="w-100"
+                        className="w-50"
                         value={quiz.untilDate}
                         onChange={handleChange}
                       />
-                      <button className="btn btn-outline-secondary">
-                        <i className="fas fa-calendar"></i>
-                      </button>
                     </div>
                   </Form.Group>
                 </div>
@@ -494,8 +557,11 @@ export default function QuizEditor() {
         <Link to={`/Kambaz/Courses/${cid}/Quizzes`}>
           <Button variant="secondary" className="me-2">Cancel</Button>
         </Link>
-        <Button variant="primary" onClick={handleSave}>
+        <Button variant="primary" className="me-2" onClick={() => handleSaveQuiz(false)}>
           Save
+        </Button>
+        <Button variant="success" onClick={() => handleSaveQuiz(true)} className="me-2">
+          Save & Publish
         </Button>
       </div>
     </div>

@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { v4 as uuidv4 } from "uuid";
+// import { v4 as uuidv4 } from "uuid";
 
 const initialState = {
   quizzes: [],
@@ -15,7 +15,7 @@ const quizzesSlice = createSlice({
 
     addQuiz: (state, { payload: quiz }) => {
       const newQuiz: any = {
-        _id: uuidv4(),
+        _id: quiz._id,
         title: quiz.title,
         course: quiz.course,
         description: quiz.description,
