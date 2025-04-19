@@ -134,6 +134,20 @@ export default function Quizzes() {
     return date.toLocaleDateString();
   };
 
+  const getQuizAvailability = (quiz: any) => {
+    const now = new Date();
+    const start = new Date(quiz.availableDate);
+    const end = new Date(quiz.untilDate);
+    if (now < start) {
+      return `Not Available until ${start.toLocaleString()}`;
+    } else if (now > end) {
+      return "Closed";
+    } else {
+      return "Available";
+    }
+
+  }
+
   if (loading) {
     return <div>Loading assignments...</div>;
   }
@@ -199,7 +213,10 @@ export default function Quizzes() {
                   </>
                 )}
 
-                <p> <b> {quiz.availability} </b> | <b> Due </b> {formatDate(quiz.dueDate)} | {quiz.points} pts | {quiz.quesNum} Questions</p>
+                <p> <b> {getQuizAvailability(quiz)} </b> | <b> Due </b> {formatDate(quiz.dueDate)} | {quiz.points} pts | {quiz.quesNum} Questions</p>
+                {currentUser?.role === "STUDENT" && quiz.score !== undefined && (
+                      <span className="ms-2">| <b>Score:</b> {quiz.score}</span>
+                    )}
               </ListGroup.Item>
             ))}
           </ListGroup>
