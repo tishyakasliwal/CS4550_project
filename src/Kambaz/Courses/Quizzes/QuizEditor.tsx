@@ -7,8 +7,6 @@ import { useDispatch } from 'react-redux';
 import { v4 as uuidv4 } from "uuid";
 import { updateQuiz, addQuiz }
   from "./reducer";
-import QuizzesControls from "./QuizzesControls";
-import QuizzesControlButtons from "./QuizzesControlButtons";
 
 
 export default function QuizEditor() {
@@ -178,14 +176,6 @@ export default function QuizEditor() {
             readOnly
             disabled
           />
-          {/* <div className="ms-3 d-flex align-items-center">
-            <button
-              className="btn btn-outline-secondary"
-              style={{ border: "none" }}
-            >
-              <i className="fas fa-ellipsis-v"></i>
-            </button>
-          </div> */}
         </div>
       </div>
 

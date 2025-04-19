@@ -213,10 +213,10 @@ export default function Quizzes() {
                   </>
                 )}
 
-                <p> <b> {getQuizAvailability(quiz)} </b> | <b> Due </b> {formatDate(quiz.dueDate)} | {quiz.points} pts | {quiz.quesNum} Questions</p>
+                <p> <b> {getQuizAvailability(quiz)} </b> | <b> Due </b> {formatDate(quiz.dueDate)} | {quiz.points} pts | {quiz.quesNum} Questions
                 {currentUser?.role === "STUDENT" && quiz.score !== undefined && (
-                      <span className="ms-2">| <b>Score:</b> {quiz.score}</span>
-                    )}
+                      <span className="ms-2">| <b>Score</b> {quiz.score}</span>
+                    )} </p>
               </ListGroup.Item>
             ))}
           </ListGroup>
