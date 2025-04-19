@@ -80,7 +80,7 @@ export default function QuizDetails() {
         </div>
         <div className="d-flex flex-column text-center">
           <p className="mb-1"><b>For</b></p>
-          <p>{quiz.for}</p>
+          <p>Everyone</p>
         </div>
         <div className="d-flex flex-column text-center">
           <p className="mb-1"><b>Available From</b></p>

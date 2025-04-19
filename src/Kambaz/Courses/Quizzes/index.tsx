@@ -1,7 +1,6 @@
 import { Button, ListGroup, Modal } from "react-bootstrap";
 import { BsGripVertical } from "react-icons/bs";
 import QuizzesControlButtons from "./QuizzesControlButtons";
-
 import { GoRocket } from "react-icons/go";
 import { Link, useParams } from "react-router-dom";
 import "../../styles.css";
@@ -11,6 +10,9 @@ import QuizzesControls from "./QuizzesControls";
 import { deleteQuiz, setQuizzes, updateQuiz } from "./reducer";
 import { useNavigate } from "react-router-dom";
 import * as quizzesClient from "./client";
+import { FaBan } from "react-icons/fa";
+import GreenCheckmark from "./GreenCheckmark";
+
 
 export default function Quizzes() {
   const { cid } = useParams<{ cid?: string }>();
@@ -21,6 +23,8 @@ export default function Quizzes() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const { currentUser } = useSelector((state: any) => state.accountReducer);
+  const [quizzesWithDetails, setQuizzesWithDetails] = useState<any[]>([]);
+
   const courseQuizzes = quizzes.filter((quiz: any) => {
     const isInCourse = quiz.course === cid;
     if (currentUser?.role === "STUDENT") {
@@ -48,6 +52,49 @@ export default function Quizzes() {
     fetchQuizzes();
   }, [cid, dispatch]);
 
+  // question details for each quiz
+  useEffect(() => {
+    const fetchQuizDetails = async () => {
+      if (courseQuizzes.length === 0) return;
+
+      try {
+        const updatedQuizzes = await Promise.all(
+          courseQuizzes.map(async (quiz: any) => {
+            try {
+              // fetch questions for this quiz
+              const response = await quizzesClient.findQuestionsForQuiz(quiz._id);
+              const mcqQuestions = response.mcqQuestions || [];
+              const fillInQuestions = response.fillInQuestions || [];
+              const tfQuestions = response.tfQuestions || [];
+
+              // total number of questions
+              const questionCount = mcqQuestions.length + fillInQuestions.length + tfQuestions.length;
+
+              // calculate total points from questions
+              const allQuestions = [...mcqQuestions, ...fillInQuestions, ...tfQuestions];
+              const totalPoints = allQuestions.reduce((sum, q) => sum + (q.points || 0), 0);
+
+              // quiz with calculated details
+              return {
+                ...quiz,
+                quesNum: questionCount,
+                points: totalPoints
+              };
+            } catch (error) {
+              console.error(`Error fetching questions for quiz ${quiz._id}:`, error);
+              return quiz;
+            }
+          })
+        );
+
+        setQuizzesWithDetails(updatedQuizzes);
+      } catch (error) {
+        console.error("Error updating quizzes with details:", error);
+      }
+    };
+
+    fetchQuizDetails();
+  }, [courseQuizzes]);
 
   const handleDelete = (quiz: any) => {
     setSelectedQuiz(quiz);
@@ -81,10 +128,17 @@ export default function Quizzes() {
       console.error("Error updating quiz publish status:", error);
     }
   };
-  
+
+  const formatDate = (datetime: string) => {
+    const date = new Date(datetime);
+    return date.toLocaleDateString();
+  };
+
   if (loading) {
     return <div>Loading assignments...</div>;
   }
+
+  const displayQuizzes = quizzesWithDetails.length > 0 ? quizzesWithDetails : courseQuizzes;
 
   return (
     <div id="wd-quizzes">
@@ -99,10 +153,12 @@ export default function Quizzes() {
           </div>
 
           <ListGroup id="wd-quiz-list" className="wd-lessons rounded-0">
-            {courseQuizzes.map((quiz: any) => (
+            {displayQuizzes.map((quiz: any) => (
               <ListGroup.Item key={quiz._id} className="wd-quiz-list-item">
                 <a href={`#/Kambaz/Courses/${cid}/Quizzes/${quiz._id}`} className="wd-quiz-link"> </a>
                 <GoRocket className="me-2 fs-3" />
+
+
                 {currentUser?.role === "STUDENT" ? (
                   <Link
                     to={`/Kambaz/Courses/${cid}/Quizzes/${quiz._id}/start`}
@@ -118,21 +174,32 @@ export default function Quizzes() {
                     {quiz.title}
                   </Link>
                 )} {currentUser?.role === "FACULTY" && (
-                  // Show control buttons only for faculty
-                  <QuizzesControlButtons
-                    quiz={quiz}
-                    onEdit={() => handleEdit(quiz)}
-                    onDelete={() => handleDelete(quiz)}
-                    onPublish={() => handlePublish(quiz)}
-                  />
+                  <>
+
+                    <QuizzesControlButtons
+                      quiz={quiz}
+                      onEdit={() => handleEdit(quiz)}
+                      onDelete={() => handleDelete(quiz)}
+                      onPublish={() => handlePublish(quiz)}
+                    />
+                    <span
+                    className="publish-status me-2"
+                    onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        handlePublish(quiz);
+                      }
+                    }
+                  >
+                    {quiz.published ?
+                      <GreenCheckmark /> :
+                      <FaBan className="text-danger" />
+                    }
+                  </span>
+                  </>
                 )}
 
-                <p> <b> {quiz.availability} </b> | <b> Due </b> {quiz.dueDate} | {quiz.points} pts | {quiz.quesNum} Questions</p>
-                {/* {currentUser?.role === "FACULTY" && (
-                  <Button variant="danger" size="sm" className="float-end" onClick={() => handleDelete(quiz)}>
-                    <LuTrash />
-                  </Button>
-                )} */}
+                <p> <b> {quiz.availability} </b> | <b> Due </b> {formatDate(quiz.dueDate)} | {quiz.points} pts | {quiz.quesNum} Questions</p>
               </ListGroup.Item>
             ))}
           </ListGroup>

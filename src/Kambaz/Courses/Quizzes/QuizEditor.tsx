@@ -24,7 +24,7 @@ export default function QuizEditor() {
     description: "",
     availability: "Available",
     dueDate: "",
-    points: 10,
+    points: 0,
     quesNum: 0,
     score: 0,
     quizType: "Graded Quiz",
@@ -36,7 +36,7 @@ export default function QuizEditor() {
     viewResponses: "After Due Date",
     showCorrectAnswers: "After Submission",
     accessCode: "",
-    oneQuestionAtATime: "No",
+    oneQuestionAtATime: "Yes",
     viewResults: "Yes",
     webcamRequired: "No",
     lockQuestionsAfterAnswering: "No",
@@ -141,6 +141,17 @@ export default function QuizEditor() {
     }));
   };
 
+  const totalPoints = questions.reduce((sum, q) => sum + (q.points || 0), 0);
+
+  useEffect(() => {
+    if (questions.length > 0) {
+      setQuiz(prevQuiz => ({
+        ...prevQuiz,
+        points: totalPoints
+      }));
+    }
+  }, [totalPoints]);
+
   if (!quiz) {
     return <div>Loading...</div>;
   }
@@ -156,14 +167,15 @@ export default function QuizEditor() {
           <h3 className="m-0">{quiz.title}</h3>
         </div>
         <div className="d-flex align-items-center">
-          <span className="me-2">{quiz.points}</span>
+          <span className="me-2">Points</span>
           <input
-            type="text"
+            type="number"
             className="form-control"
             id="points"
-            value={quiz.points}
+            value= {quiz.points}
             style={{ width: "60px" }}
-            onChange={handleChange}
+            readOnly
+            disabled
           />
           <div className="ms-3 d-flex align-items-center">
             <span className="text-secondary me-2">{quiz.availability}</span>
@@ -318,7 +330,7 @@ export default function QuizEditor() {
                 >
                   <option value="Graded Quiz">Graded Quiz</option>
                   <option value="Practice Quiz">Practice Quiz</option>
-                  <option value="Survey">Survey</option>
+                  <option value="Graded Survey">Graded Survey</option>
                   <option value="Ungraded Survey">Ungraded Survey</option>
                 </Form.Select>
               </Form.Group>
@@ -550,6 +562,11 @@ export default function QuizEditor() {
               </ListGroup.Item>
             ))}
           </ListGroup>
+          {questions.length > 0 && (
+            <div className="mt-3 text-end">
+              <p>Total Points: {totalPoints}</p>
+            </div>
+          )}
         </div>
       )}
 
