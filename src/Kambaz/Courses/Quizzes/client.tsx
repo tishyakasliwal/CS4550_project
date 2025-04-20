@@ -139,3 +139,14 @@ export const findQuestionById = async (questionId: string, type: string) => {
     }
     return response.data;
 }
+
+export const fetchQuizAttempts = async (
+    quizId: string,
+    studentId: string
+  ) => {
+    const response = await axiosWithCredentials.get(
+      `${QUIZZES_API}/${quizId}/attempts`,
+      { params: { student: studentId } }
+    );
+    return response.data as any[];
+  };

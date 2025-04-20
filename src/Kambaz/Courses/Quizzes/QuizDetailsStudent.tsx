@@ -1,6 +1,9 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { Button } from "react-bootstrap";
 import { useParams, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { useState, useEffect } from "react";
+import { fetchQuizAttempts } from "./client";
 
 interface RouteParams {
   cid: string;
@@ -15,8 +18,34 @@ export default function QuizDetailsStudent() {
   // Pull the quiz list from reducer
   const quizzes = useSelector((state: any) => state.quizzesReducer.quizzes);
 
+    // Pull current user (to get studentId)
+    const studentId = useSelector(
+      (state: any) => state.userReducer.currentUser._id
+    );
+
   // Find the quiz that matches the URL quizId
   const quiz = quizzes.find((q: any) => q._id === quizId);
+
+    // Local state for attempts
+    const [latestAttempt, setLatestAttempt] = useState<any>(null);
+    const [attemptsLeft, setAttemptsLeft] = useState<number>(0);
+
+    // Load attempts on mount (or when quiz changes)
+    useEffect(() => {
+      async function loadAttempts() {
+        if (!studentId || !quiz) return;
+
+        const all = await fetchQuizAttempts(quizId!, studentId);
+        if (all.length) {
+          setLatestAttempt(all[0]);            // most recent
+        }
+        const used = all.length;
+        const allowed =
+          quiz.multipleAttempts === "Yes" ? quiz.numOfAttemps : 1;
+        setAttemptsLeft(Math.max(0, allowed - used));
+      }
+      loadAttempts();
+    }, [quizId, studentId, quiz?.multipleAttempts, quiz?.numOfAttemps]);
 
   // Handle case where quiz doesn’t exist
   if (!quiz) {
@@ -39,9 +68,26 @@ export default function QuizDetailsStudent() {
         <strong>Number of Questions:</strong> {quiz.quesNum}
       </p>
 
-      {/* Start Quiz button */}
-      <Button variant="primary" onClick={handleStartQuiz}>
-        Start Quiz
+      {latestAttempt && (
+        <div className="mb-3">
+          <strong>Last Attempt:</strong>{" "}
+          {new Date(latestAttempt.takenAt).toLocaleString()}
+          <br />
+          <strong>Score:</strong> {latestAttempt.score}/{quiz.points}
+        </div>
+      )}
+
+      {/* Start Quiz button & Attempts*/}
+      <Button
+        variant="primary"
+        onClick={handleStartQuiz}
+        disabled={attemptsLeft === 0}
+      >
+        {attemptsLeft > 0
+          ? `Start Quiz (${attemptsLeft} attempt${
+              attemptsLeft > 1 ? "s" : ""
+            } left)`
+          : "No Attempts Left"}
       </Button>
     </div>
   );
