@@ -20,7 +20,7 @@ export default function QuizDetailsStudent() {
 
     // Pull current user (to get studentId)
     const studentId = useSelector(
-      (state: any) => state.userReducer.currentUser._id
+      (state: any) => state.accountReducer.currentUser._id
     );
 
   // Find the quiz that matches the URL quizId
@@ -28,7 +28,7 @@ export default function QuizDetailsStudent() {
 
     // Local state for attempts
     const [latestAttempt, setLatestAttempt] = useState<any>(null);
-    const [attemptsLeft, setAttemptsLeft] = useState<number>(0);
+    const [attemptsLeft, setAttemptsLeft] = useState<number>(1);
 
     // Load attempts on mount (or when quiz changes)
     useEffect(() => {

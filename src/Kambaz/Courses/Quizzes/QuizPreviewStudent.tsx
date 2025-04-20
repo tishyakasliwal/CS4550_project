@@ -20,7 +20,6 @@ export default function QuizPreview() {
 
         const { mcqQuestions, fillInQuestions, tfQuestions } =
           await quizzesClient.findQuestionsForQuiz(quizId!); // Fetch questions by type
-        console.log("MCQ Questions:", mcqQuestions);
 
         // Combine all questions into a single array with a `type` field
         const combinedQuestions = [
@@ -28,7 +27,6 @@ export default function QuizPreview() {
           ...fillInQuestions.map((q: any) => ({ ...q, type: "FILL_IN_THE_BLANK" })),
           ...tfQuestions.map((q: any) => ({ ...q, type: "TRUE_FALSE" })),
         ];
-        console.log("Combined Questions:", combinedQuestions);
 
         setQuestions(combinedQuestions);
       } catch (error) {
@@ -88,7 +86,6 @@ export default function QuizPreview() {
           {currentQuestion.type === "MCQ" && (
             <div className="options">
               {currentQuestion.choices.map((choice: any) => (
-                console.log("Choice:", choice),
                 <Form.Check
                   key={choice.text}
                   type="radio"

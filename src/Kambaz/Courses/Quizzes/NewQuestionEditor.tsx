@@ -19,7 +19,7 @@ interface Question {
     title: string;
     points: number;
     question: string;
-    choices?: { choice: string; isCorrect: boolean }[];
+    choices?: { text: string; isCorrect: boolean }[];
     correctAnswer?: string;
     correctChoices?: string[];
     }
@@ -62,7 +62,7 @@ interface Question {
     if (type === "MCQ") {
       setQuestion((prev) => ({
         ...prev,
-        choices: [...(prev.choices || []), { choice: "", isCorrect: false }],
+        choices: [...(prev.choices || []), { text: "", isCorrect: false }],
       }));
     } else if (type === "FILL_IN_THE_BLANK") {
       setQuestion((prev) => ({
@@ -77,7 +77,7 @@ interface Question {
       setQuestion((prev) => ({
         ...prev,
         choices: (prev.choices || []).map((choice, i) =>
-          i === index ? { ...choice, choice: value } : choice
+          i === index ? { ...choice, text: value } : choice
         ),
       }));
     } else if (type === "FILL_IN_THE_BLANK") {

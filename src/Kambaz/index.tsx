@@ -69,7 +69,7 @@ export default function Kambaz() {
   const [enrolling, setEnrolling] = useState<boolean>(false);
 
   const findCoursesForUser = async () => {
-    try {
+    try { console.log("Finding courses for user:", currentUser._id);
       const courses = await userClient.findCoursesForUser(currentUser._id);
       setCourses(courses);
     } catch (error) {
