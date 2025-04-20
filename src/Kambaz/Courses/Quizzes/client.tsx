@@ -150,3 +150,20 @@ export const fetchQuizAttempts = async (
     );
     return response.data as any[];
   };
+
+
+//  POST a new quiz‐attempt for a student
+export const submitQuizAttempt = async (
+    quizId: string,
+    payload: {
+      student: string;
+      answers: { question: string; selectedAnswer: any; correct: boolean }[];
+      score: number;
+    }
+  ) => {
+    const response = await axiosWithCredentials.post(
+      `${QUIZZES_API}/${quizId}/attempt`,
+      payload
+    );
+    return response.data;
+  };
