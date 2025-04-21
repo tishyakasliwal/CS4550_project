@@ -12,6 +12,11 @@ export default function Labs() {
   return (
     <Provider store={store}>
     <div className="container-fluid">
+      <h1> Final Project</h1>
+      Members: Tishya Kasliwal, Luana Siyoum, Iris Garcia, Ibrahima Toure <br/>
+      Github repos used for final project: <a href="https://github.com/tishyakasliwal/CS4550_project"> Web App client</a> &nbsp;
+      <a href="https://github.com/tishyakasliwal/kambaz-node-server-app"> Server repo</a>
+
       <h1>Labs</h1>
       <h3>Tishya Kasliwal CS 4550-02</h3>
       Github repo for kambaz:
