@@ -52,6 +52,8 @@ export default function Quizzes() {
     fetchQuizzes();
   }, [cid, dispatch]);
 
+
+
   // question details for each quiz
   useEffect(() => {
     const fetchQuizDetails = async () => {
@@ -74,11 +76,27 @@ export default function Quizzes() {
               const allQuestions = [...mcqQuestions, ...fillInQuestions, ...tfQuestions];
               const totalPoints = allQuestions.reduce((sum, q) => sum + (q.points || 0), 0);
 
+              //fetch student attempts
+              let latestScore = undefined;
+              if (currentUser?.role === "STUDENT" && currentUser?._id) {
+                try {
+                  const attempts = await quizzesClient.fetchQuizAttempts(quiz._id, currentUser._id);
+                  if (attempts && attempts.length > 0) {
+                    // Get the most recent attempt (assuming they're sorted by date)
+                    const lastAttempt = attempts[0];
+                    latestScore = lastAttempt.score;
+                  }
+                } catch (attemptError) {
+                  console.error(`Error fetching attempts for quiz ${quiz._id}:`, attemptError);
+                }
+              }
+
               // quiz with calculated details
               return {
                 ...quiz,
                 quesNum: questionCount,
-                points: totalPoints
+                points: totalPoints,
+                score: latestScore
               };
             } catch (error) {
               console.error(`Error fetching questions for quiz ${quiz._id}:`, error);
